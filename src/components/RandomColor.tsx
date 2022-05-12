@@ -4,12 +4,15 @@ import { RandomColor } from "contexts/color/ColorContext";
 import { useLayoutEffect, useState } from "react";
 import getTextColorFromHex from "utils/getTextColorFromHex";
 import { BsFillTrashFill } from "react-icons/bs";
+import { AiFillLock as Lock, AiFillUnlock as Unlock } from "react-icons/ai";
 import useColor from "contexts/color/useColor";
 import getHoverColorFromHex from "utils/getHoverColorFromHex";
 import copyToClipboard from "utils/copyToClipboard";
 import Button from "./Button";
+import { BREAKPOINT_TABLET } from "utils/constants";
+
 const RandomColor = ({ color, index }: Props) => {
-  const { removeColor, randomColors } = useColor();
+  const { removeColor, randomColors, toggleColorLock } = useColor();
 
   const [stateTextColor, setStateTextColor] = useState("#ffffff");
   const [stateHoverColor, setStateHoverColor] = useState("hsl(0, 0%, 100%)");
@@ -25,7 +28,7 @@ const RandomColor = ({ color, index }: Props) => {
         background-color: ${color.hex};
         color: ${stateTextColor};
         @media screen and (hover: hover) {
-          &:hover {
+          &:active {
             background-color: ${stateHoverColor};
           }
         }
@@ -35,10 +38,15 @@ const RandomColor = ({ color, index }: Props) => {
       <HexColor>{color.hex}</HexColor>
       <ButtonContainer>
         <Button
+          Icon={color.locked ? Lock : Unlock}
+          onClick={() => toggleColorLock(index)}
+          hex={color.hex}
+        />
+        <Button
           Icon={BsFillTrashFill}
           hex={color.hex}
           onClick={() => removeColor(index)}
-          hide={randomColors.length <= 1}
+          hide={randomColors.length <= 1 || color.locked}
         />
       </ButtonContainer>
     </Container>
@@ -47,7 +55,25 @@ const RandomColor = ({ color, index }: Props) => {
 
 const ButtonContainer = styled.div`
   display: flex;
+  flex-direction: column;
   margin-top: 1rem;
+
+  & > button:not(:nth-child(1)) {
+    margin-top: 1rem;
+  }
+
+  @media screen and (max-width: ${BREAKPOINT_TABLET}) {
+    flex-direction: row;
+    margin-top: 0;
+
+    & > button {
+      margin-top: 0 !important;
+    }
+
+    & > button:not(:nth-child(1)) {
+      margin-left: 1rem;
+    }
+  }
 `;
 
 const Container = styled.div`
@@ -59,11 +85,23 @@ const Container = styled.div`
   user-select: none;
   flex-direction: column;
   width: 100%;
+  height: 100%;
+
+  @media screen and (max-width: ${BREAKPOINT_TABLET}) {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 2rem;
+  }
 `;
 
 const HexColor = styled.p`
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: var(--font-medium);
+  transition: font-size 128ms ease;
+
+  @media screen and (max-width: 1280px) {
+    font-size: 1.25rem;
+  }
 `;
 
 type Props = {

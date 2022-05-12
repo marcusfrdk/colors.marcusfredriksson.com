@@ -4,7 +4,11 @@ import { PRIMARY_COLOR } from "utils/constants";
 
 const Button = ({ Icon, onClick, hex = PRIMARY_COLOR, hide }: Props) => {
   return (
-    <Container className={hide ? "hide" : ""} onClick={onClick}>
+    <Container
+      className={hide ? "hide" : ""}
+      onClick={onClick}
+      onKeyDown={(e) => (e.key === " " ? e.preventDefault() : null)}
+    >
       <Icon size="50%" color={hex} />
     </Container>
   );
@@ -33,6 +37,7 @@ const Container = styled.button`
   &.hide {
     height: 0;
     width: 0;
+    margin: 0 !important;
   }
 `;
 

@@ -5,6 +5,7 @@ import Toolbar, { ToolbarButton } from "components/Toolbar";
 import { MAX_NUMBER_OF_COLORS } from "contexts/color/ColorProvider";
 import useColor from "contexts/color/useColor";
 import { AiOutlinePlus as Plus } from "react-icons/ai";
+import { BREAKPOINT_TABLET } from "utils/constants";
 
 const HomePage = () => {
   const { randomColors, addColor } = useColor();
@@ -33,6 +34,9 @@ const Container = styled.main`
   height: 100vh;
   width: 100vw;
   display: flex;
+  @media screen and (max-width: ${BREAKPOINT_TABLET}) {
+    flex-direction: column;
+  }
 `;
 
 export default HomePage;

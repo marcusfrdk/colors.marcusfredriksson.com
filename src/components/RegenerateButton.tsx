@@ -5,7 +5,8 @@ import useColor from "contexts/color/useColor";
 const RegenerateButton = () => {
   const { randomColors, regenerateColors } = useColor();
 
-  if (randomColors.length === 0) return null;
+  const allLocked = randomColors.every((color) => color.locked);
+  if (randomColors.length === 0 || allLocked) return null;
 
   const gradientLeft = randomColors[0].hex;
   const gradientRight = randomColors[randomColors.length - 1].hex;

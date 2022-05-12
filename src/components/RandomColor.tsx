@@ -62,24 +62,18 @@ const RandomColor = ({ color, index }: Props) => {
 
 const ButtonContainer = styled.div`
   display: flex;
-  flex-direction: column;
   margin-top: 1rem;
 
+  & > button {
+    margin-top: 0 !important;
+  }
+
   & > button:not(:nth-child(1)) {
-    margin-top: 1rem;
+    margin-left: 1rem;
   }
 
   @media screen and (max-width: ${BREAKPOINT_TABLET}) {
-    flex-direction: row;
     margin-top: 0;
-
-    & > button {
-      margin-top: 0 !important;
-    }
-
-    & > button:not(:nth-child(1)) {
-      margin-left: 1rem;
-    }
   }
 `;
 
@@ -97,18 +91,14 @@ const Container = styled.div`
   @media screen and (max-width: ${BREAKPOINT_TABLET}) {
     flex-direction: row;
     justify-content: space-between;
-    padding: 0 2rem;
+    padding: 0 1rem;
   }
 `;
 
 const HexColor = styled.p`
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: var(--font-medium);
   transition: font-size 128ms ease;
-
-  @media screen and (max-width: 1280px) {
-    font-size: 1.25rem;
-  }
 `;
 
 type Props = {

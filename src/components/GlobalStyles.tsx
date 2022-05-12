@@ -1,4 +1,5 @@
 import { Global, css } from "@emotion/react";
+import { BREAKPOINT_TABLET } from "utils/constants";
 
 const GlobalStyles = () => {
   return (
@@ -25,6 +26,13 @@ const GlobalStyles = () => {
           --font-normal: 400;
           --font-medium: 600;
           --font-bold: 700;
+
+          --header-height: 4rem;
+          --toolbar-height: 4rem;
+
+          @media screen and (max-width: ${BREAKPOINT_TABLET}) {
+            --header-height: 3rem;
+          }
         }
       `}
     />

@@ -1,42 +1,85 @@
 import styled from "@emotion/styled";
+import useColor from "contexts/color/useColor";
 import { IconType } from "react-icons";
-import Button from "./Button";
 
-const Toolbar = ({ buttons }: ToolbarProps) => {
-  const hide = buttons.every((button) => button.hide);
+import { ImSpinner11 as Spinner } from "react-icons/im";
+import { AiOutlinePlus as Plus } from "react-icons/ai";
+import { MAX_NUMBER_OF_COLORS } from "contexts/color/ColorProvider";
+
+const Toolbar = () => {
+  const { addColor, regenerateColors, randomColors } = useColor();
+
+  const allLocked = randomColors.every((color) => color.locked);
+  const allAdded = randomColors.length >= MAX_NUMBER_OF_COLORS;
+  const noButtonsVisible = allLocked && allAdded;
+
+  const buttons: ToolbarButton[] = [
+    {
+      Icon: Spinner,
+      onClick: regenerateColors,
+      hide: allLocked,
+    },
+    {
+      Icon: Plus,
+      onClick: addColor,
+      hide: allAdded,
+    },
+  ];
 
   return (
-    <Container className={hide ? "hide" : ""}>
-      {buttons.map((props, index) => {
-        return <Button key={index} {...props} />;
-      })}
+    <Container className={noButtonsVisible ? "hide" : ""}>
+      {buttons.map(({ Icon, onClick, hide }, index) => (
+        <Button key={index} onClick={onClick} className={hide ? "hide" : ""}>
+          <Icon size="50%" color="#777777" />
+        </Button>
+      ))}
     </Container>
   );
 };
 
-const Container = styled.menu`
+const Button = styled.button`
+  height: 100%;
+  width: 100%;
+  background-color: #eaeaea;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 128ms ease;
+  @media screen and (hover: hover) {
+    &:hover {
+      background-color: #dfdfdf;
+    }
+  }
+  &.hide {
+    height: 0;
+    width: 0;
+    margin: 0 !important;
+  }
+`;
+
+const Container = styled.div`
+  height: var(--toolbar-height);
+  width: 100vw;
   padding: 0.5rem;
-  background-color: #ffffff;
-  position: absolute;
-  top: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 1rem;
+  display: flex;
+  transition-property: height, padding;
+  transition: 128ms ease;
+
+  & > button:not(:nth-child(1)) {
+    margin-left: 0.5rem;
+  }
 
   &.hide {
+    height: 0;
     padding: 0;
   }
 `;
 
-export type ToolbarButton = {
+type ToolbarButton = {
   Icon: IconType;
   onClick: () => void;
-  tooltip: string;
+  hex?: string;
   hide?: boolean;
-};
-
-export type ToolbarProps = {
-  buttons: ToolbarButton[];
 };
 
 export default Toolbar;

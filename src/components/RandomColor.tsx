@@ -1,15 +1,17 @@
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { RandomColor } from "contexts/color/ColorContext";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import getTextColorFromHex from "utils/getTextColorFromHex";
-import { BsFillTrashFill } from "react-icons/bs";
-import { AiFillLock as Lock, AiFillUnlock as Unlock } from "react-icons/ai";
 import useColor from "contexts/color/useColor";
 import getHoverColorFromHex from "utils/getHoverColorFromHex";
 import copyToClipboard from "utils/copyToClipboard";
 import Button from "./Button";
 import { BREAKPOINT_TABLET } from "utils/constants";
+
+import { BsFillTrashFill } from "react-icons/bs";
+import { FaLayerGroup as Layers } from "react-icons/fa";
+import { AiFillLock as Lock, AiFillUnlock as Unlock } from "react-icons/ai";
 
 const RandomColor = ({ color, index }: Props) => {
   const { removeColor, randomColors, toggleColorLock } = useColor();
@@ -17,7 +19,7 @@ const RandomColor = ({ color, index }: Props) => {
   const [stateTextColor, setStateTextColor] = useState("#ffffff");
   const [stateHoverColor, setStateHoverColor] = useState("hsl(0, 0%, 100%)");
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setStateHoverColor(getHoverColorFromHex(color.hex));
     setStateTextColor(getTextColorFromHex(color.hex));
   }, [color, setStateTextColor]);
@@ -40,6 +42,11 @@ const RandomColor = ({ color, index }: Props) => {
         <Button
           Icon={color.locked ? Lock : Unlock}
           onClick={() => toggleColorLock(index)}
+          hex={color.hex}
+        />
+        <Button
+          Icon={Layers}
+          onClick={() => console.log("Using layers")}
           hex={color.hex}
         />
         <Button

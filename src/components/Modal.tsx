@@ -24,7 +24,7 @@ const Modal = ({ children, isVisible, setIsVisible }: Props) => {
 };
 
 const Container = styled.div`
-  padding: 2rem;
+  padding: 1.5rem;
   background-color: #fff;
   border-radius: 1rem;
   position: fixed;
@@ -32,10 +32,11 @@ const Container = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 101;
-  transition-property: opacity, top;
-  -webkit-transition-property: opacity, top;
+  transition-property: opacity, top, width;
   transition: ${timeout}ms ease;
   opacity: 1;
+  max-width: calc(100vw - 2rem);
+  width: 48rem;
 
   &.modal-enter {
     opacity: 0;

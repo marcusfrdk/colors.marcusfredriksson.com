@@ -8,6 +8,8 @@ import { ImSpinner11 as Spinner } from "react-icons/im";
 import { AiOutlinePlus as Plus } from "react-icons/ai";
 import { BsFillTrashFill as Trash } from "react-icons/bs";
 import Modal from "./Modal";
+import ModalText from "./ModalText";
+import ModalButton from "./ModalButton";
 
 const Toolbar = () => {
   const { addColor, regenerateColors, randomColors, resetColors } = useColor();
@@ -21,16 +23,11 @@ const Toolbar = () => {
     setStateAllAdded(randomColors.length === MAX_NUMBER_OF_COLORS);
   }, [randomColors]);
 
-  // const noButtonsVisible = useMemo(
-  //   () => stateAllLocked && stateAllAdded,
-  //   [stateAllAdded, stateAllLocked]
-  // );
-
   const buttons: ToolbarButton[] = [
     {
       Icon: Trash,
       onClick: () => setStateModalIsVisible(true),
-      // onClick: resetColors,
+      disabled: randomColors.length <= 1,
     },
     {
       Icon: Spinner,
@@ -44,8 +41,6 @@ const Toolbar = () => {
       buttonSize: "65%",
     },
   ];
-
-  // className={noButtonsVisible ? "hide" : ""}
 
   return (
     <Container>
@@ -63,11 +58,36 @@ const Toolbar = () => {
         isVisible={stateModalIsVisible}
         setIsVisible={setStateModalIsVisible}
       >
-        <p>Hello World</p>
+        <ModalText>
+          Are you sure you want to reset all the colors back to default? This
+          will remove all colors, including those that are locked.
+        </ModalText>
+        <ButtonGroup>
+          <ModalButton
+            text="Reset"
+            textHex="#ffffff"
+            bgHex="#F31103"
+            hoverBgHex="#CA0F02"
+            onClick={() => {
+              resetColors();
+              setStateModalIsVisible(false);
+            }}
+          />
+          <ModalButton
+            text="Cancel"
+            onClick={() => setStateModalIsVisible(false)}
+          />
+        </ButtonGroup>
       </Modal>
     </Container>
   );
 };
+
+const ButtonGroup = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+`;
 
 const Button = styled.button`
   height: 100%;
@@ -83,6 +103,7 @@ const Button = styled.button`
     }
   }
   &:disabled {
+    cursor: default;
     svg {
       fill: #bfbfbf;
     }

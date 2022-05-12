@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import generateRandomHex from "utils/generateRandomHex";
 import ColorContext, {
   AddColor,
   RandomColor,
   RegenerateColors,
+  RemoveColor,
   ToggleColorLock,
 } from "./ColorContext";
 
@@ -27,6 +28,13 @@ const ColorProvider = ({ children }: Props) => {
     [setStateRandomColors]
   );
 
+  const removeColor: RemoveColor = useCallback(
+    (index) => {
+      setStateRandomColors((rc) => rc.filter((_, i) => i !== index));
+    },
+    [setStateRandomColors]
+  );
+
   const regenerateColors: RegenerateColors = useCallback(() => {
     const newRandomColors = stateRandomColors.map((color) => {
       if (color.locked) return color;
@@ -44,10 +52,6 @@ const ColorProvider = ({ children }: Props) => {
     [setStateRandomColors]
   );
 
-  useEffect(() => {
-    console.log("State updated!");
-  }, [stateRandomColors]);
-
   useLayoutEffect(() => {
     setStateRandomColors([{ hex: generateRandomHex(), locked: false }]);
   }, [setStateRandomColors]);
@@ -57,6 +61,7 @@ const ColorProvider = ({ children }: Props) => {
       value={{
         randomColors: stateRandomColors,
         addColor,
+        removeColor,
         regenerateColors,
         toggleColorLock,
       }}

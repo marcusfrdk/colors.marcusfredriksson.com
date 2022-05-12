@@ -1,0 +1,8 @@
+.next
+node_nodules
+__tests__
+cypress
+.dockerignore
+Dockerfile
+npm-debug.log
+.git

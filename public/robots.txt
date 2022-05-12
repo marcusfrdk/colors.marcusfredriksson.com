@@ -1,4 +1,4 @@
 User-agent: *
 Allow: *
 
-Sitemap: https://colors.marcusfredriksson.com/sitemap.xml
+Sitemap: https://colors.talmio.com/sitemap.xml

@@ -3,12 +3,20 @@ import RandomColor from "components/RandomColor";
 import Toolbar from "components/Toolbar";
 import useColor from "contexts/color/useColor";
 import { BREAKPOINT_TABLET } from "utils/constants";
+import Head from "next/head";
 
 const HomePage = () => {
   const { randomColors } = useColor();
 
   return (
     <Container>
+      <Head>
+        <title>Talmio Colors</title>
+        <meta
+          name="description"
+          content="Easily generate colors, shades and more."
+        />
+      </Head>
       <ColorContainer>
         {randomColors.map((color, index) => (
           <RandomColor color={color} key={index} index={index} />

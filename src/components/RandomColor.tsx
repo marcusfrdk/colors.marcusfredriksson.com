@@ -9,8 +9,8 @@ import Button from "./Button";
 import { BREAKPOINT_TABLET } from "utils/constants";
 
 import { BsFillTrashFill } from "react-icons/bs";
-import { FaLayerGroup as Layers } from "react-icons/fa";
 import { AiFillLock as Lock, AiFillUnlock as Unlock } from "react-icons/ai";
+// import { FaLayerGroup as Layers } from "react-icons/fa";
 
 const RandomColor = ({ color, index }: Props) => {
   const { removeColor, randomColors, toggleColorLock } = useColor();
@@ -36,11 +36,11 @@ const RandomColor = ({ color, index }: Props) => {
           onClick={() => toggleColorLock(index)}
           hex={color.hex}
         />
-        <Button
+        {/* <Button
           Icon={Layers}
           onClick={() => console.log("Using layers")}
           hex={color.hex}
-        />
+        /> */}
         <Button
           Icon={BsFillTrashFill}
           hex={color.hex}

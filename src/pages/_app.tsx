@@ -1,3 +1,4 @@
+import ColorProvider from "contexts/color/ColorProvider";
 import { NextComponentType } from "next";
 
 const App = ({
@@ -7,7 +8,11 @@ const App = ({
   Component: NextComponentType;
   pageProps: any;
 }) => {
-  return <Component {...pageProps} />;
+  return (
+    <ColorProvider>
+      <Component {...pageProps} />
+    </ColorProvider>
+  );
 };
 
 export default App;

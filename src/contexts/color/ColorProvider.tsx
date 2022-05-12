@@ -5,6 +5,7 @@ import ColorContext, {
   RandomColor,
   RegenerateColors,
   RemoveColor,
+  ResetColors,
   ToggleColorLock,
 } from "./ColorContext";
 
@@ -13,19 +14,19 @@ export const MAX_NUMBER_OF_COLORS = 8;
 const ColorProvider = ({ children }: Props) => {
   const [stateRandomColors, setStateRandomColors] = useState<RandomColor[]>([]);
 
-  const generateRandomColor = (): RandomColor => {
+  const generateRandomColor = useCallback((): RandomColor => {
     return {
       hex: generateRandomHex(),
       locked: false,
     };
-  };
+  }, []);
 
   const addColor: AddColor = useCallback(
     () =>
       setStateRandomColors((rc) =>
         rc.length < MAX_NUMBER_OF_COLORS ? [...rc, generateRandomColor()] : rc
       ),
-    [setStateRandomColors]
+    [setStateRandomColors, generateRandomColor]
   );
 
   const removeColor: RemoveColor = useCallback(
@@ -35,16 +36,21 @@ const ColorProvider = ({ children }: Props) => {
     [setStateRandomColors]
   );
 
+  const resetColors: ResetColors = useCallback(() => {
+    const defaultState = [generateRandomColor()];
+    setStateRandomColors(defaultState);
+    localStorage.removeItem("randomColors");
+  }, [setStateRandomColors, generateRandomColor]);
+
   const regenerateColors: RegenerateColors = useCallback(
     () =>
       setStateRandomColors((rc) =>
         rc.map((color) => {
-          console.log("Hello");
           if (color.locked) return color;
           return generateRandomColor();
         })
       ),
-    [setStateRandomColors]
+    [setStateRandomColors, generateRandomColor]
   );
 
   const toggleColorLock: ToggleColorLock = useCallback(
@@ -55,10 +61,6 @@ const ColorProvider = ({ children }: Props) => {
     [setStateRandomColors]
   );
 
-  useLayoutEffect(() => {
-    setStateRandomColors([{ hex: generateRandomHex(), locked: false }]);
-  }, [setStateRandomColors]);
-
   useEffect(() => {
     // Check if spacebar is pressed
     const handleSpacebar = (event: KeyboardEvent) =>
@@ -66,6 +68,28 @@ const ColorProvider = ({ children }: Props) => {
     window.addEventListener("keydown", handleSpacebar);
     return () => window.removeEventListener("keydown", handleSpacebar);
   }, [regenerateColors]);
+
+  // Load data
+  useLayoutEffect(() => {
+    const defaultData = [{ hex: generateRandomHex(), locked: false }];
+
+    try {
+      const data = localStorage.getItem("randomColors");
+      if (data) {
+        setStateRandomColors(JSON.parse(data));
+      } else {
+        setStateRandomColors(defaultData);
+      }
+    } catch (err) {
+      // If data is not valid json, JSON.parse throws error
+      setStateRandomColors(defaultData);
+    }
+  }, [setStateRandomColors]);
+
+  // Save data
+  useEffect(() => {
+    localStorage.setItem("randomColors", JSON.stringify(stateRandomColors));
+  }, [stateRandomColors]);
 
   return (
     <ColorContext.Provider
@@ -75,6 +99,7 @@ const ColorProvider = ({ children }: Props) => {
         removeColor,
         regenerateColors,
         toggleColorLock,
+        resetColors,
       }}
     >
       {children}

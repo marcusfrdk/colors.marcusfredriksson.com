@@ -11,6 +11,16 @@ const GlobalStyles = () => {
           box-sizing: border-box;
           font-family: var(--sans-serif);
         }
+
+        /* html {
+          height: -webkit-fill-available;
+        }*/
+
+        /* body {
+          min-height: 100vh;
+          min-height: -webkit-fill-available;
+        } */
+
         :root {
           background-color: var(--neutrals-0);
           scroll-behavior: smooth;
@@ -26,6 +36,8 @@ const GlobalStyles = () => {
           --font-normal: 400;
           --font-medium: 600;
           --font-bold: 700;
+
+          --viewport-height: 100vh;
 
           --header-height: 4rem;
           --toolbar-height: 4rem;

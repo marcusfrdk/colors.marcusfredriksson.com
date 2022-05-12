@@ -52,6 +52,10 @@ const Container = styled.header`
   justify-content: space-between;
   padding: 0 2rem;
   transition: padding 128ms ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
 
   @media screen and (max-width: ${BREAKPOINT_TABLET}) {
     padding: 0 1rem;

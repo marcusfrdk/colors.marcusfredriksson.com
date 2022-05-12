@@ -6,6 +6,8 @@ export type AddColor = () => void;
 
 export type RemoveColor = (index: number) => void;
 
+export type ResetColors = () => void;
+
 export type RegenerateColors = () => void;
 
 export type ToggleColorLock = (index: number) => void;
@@ -16,6 +18,7 @@ export interface IColorContext {
   removeColor: RemoveColor;
   regenerateColors: RegenerateColors;
   toggleColorLock: ToggleColorLock;
+  resetColors: ResetColors;
 }
 
 const ColorContext = createContext<IColorContext>({
@@ -24,6 +27,7 @@ const ColorContext = createContext<IColorContext>({
   removeColor: () => undefined,
   regenerateColors: () => undefined,
   toggleColorLock: () => undefined,
+  resetColors: () => undefined,
 });
 
 export default ColorContext;

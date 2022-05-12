@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { RandomColor } from "contexts/color/ColorContext";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import getTextColorFromHex from "utils/getTextColorFromHex";
 import useColor from "contexts/color/useColor";
 import getHoverColorFromHex from "utils/getHoverColorFromHex";
@@ -19,7 +19,7 @@ const RandomColor = ({ color, index }: Props) => {
   const [stateTextColor, setStateTextColor] = useState("#ffffff");
   const [stateHoverColor, setStateHoverColor] = useState("hsl(0, 0%, 100%)");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setStateHoverColor(getHoverColorFromHex(color.hex));
     setStateTextColor(getTextColorFromHex(color.hex));
   }, [color, setStateTextColor]);
@@ -68,7 +68,7 @@ const ButtonContainer = styled.div`
     margin-top: 0 !important;
   }
 
-  & > button:not(:nth-child(1)) {
+  & > button:not(:first-of-type) {
     margin-left: 1rem;
   }
 
@@ -96,7 +96,7 @@ const Container = styled.div`
 `;
 
 const HexColor = styled.p`
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: var(--font-medium);
   transition: font-size 128ms ease;
 `;

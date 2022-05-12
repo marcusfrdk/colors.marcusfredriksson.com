@@ -39,6 +39,10 @@ const Container = styled.button`
     width: 0;
     margin: 0 !important;
   }
+
+  & > svg {
+    transition: fill 128ms ease;
+  }
 `;
 
 type Props = {

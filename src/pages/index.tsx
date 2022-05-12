@@ -23,7 +23,6 @@ const ColorContainer = styled.div`
   height: 100%;
   width: 100%;
   position: relative;
-  background-color: green;
   display: flex;
 
   @media screen and (max-width: ${BREAKPOINT_TABLET}) {
@@ -32,7 +31,9 @@ const ColorContainer = styled.div`
 `;
 
 const Container = styled.main`
-  height: calc(100vh - var(--header-height));
+  padding-top: var(--header-height);
+  height: var(--viewport-height);
+  position: relative;
   width: 100vw;
   display: flex;
   flex-direction: column;

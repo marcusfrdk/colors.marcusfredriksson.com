@@ -1,3 +1,4 @@
+import GlobalStyles from "components/GlobalStyles";
 import ColorProvider from "contexts/color/ColorProvider";
 import { NextComponentType } from "next";
 
@@ -10,6 +11,7 @@ const App = ({
 }) => {
   return (
     <ColorProvider>
+      <GlobalStyles />
       <Component {...pageProps} />
     </ColorProvider>
   );

@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import generateRandomHex from "utils/generateRandomHex";
 import ColorContext, {
   AddColor,
@@ -8,7 +8,7 @@ import ColorContext, {
   ToggleColorLock,
 } from "./ColorContext";
 
-const MAX_NUMBER_OF_COLORS = 16;
+export const MAX_NUMBER_OF_COLORS = 8;
 
 const ColorProvider = ({ children }: Props) => {
   const [stateRandomColors, setStateRandomColors] = useState<RandomColor[]>([]);
@@ -55,6 +55,14 @@ const ColorProvider = ({ children }: Props) => {
   useLayoutEffect(() => {
     setStateRandomColors([{ hex: generateRandomHex(), locked: false }]);
   }, [setStateRandomColors]);
+
+  useEffect(() => {
+    // Check if spacebar is pressed
+    const handleSpacebar = (event: KeyboardEvent) =>
+      event.key === " " ? regenerateColors() : undefined;
+    window.addEventListener("keydown", handleSpacebar);
+    return () => window.removeEventListener("keydown", handleSpacebar);
+  }, [regenerateColors]);
 
   return (
     <ColorContext.Provider

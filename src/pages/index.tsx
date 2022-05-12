@@ -23,9 +23,11 @@ const ColorContainer = styled.div`
   height: 100%;
   width: 100%;
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(100vw / 4), 1fr));
 
   @media screen and (max-width: ${BREAKPOINT_TABLET}) {
+    display: flex;
     flex-direction: column;
   }
 `;

@@ -13,7 +13,7 @@ const RegenerateButton = () => {
     randomColors.length === 1 ? "Regenerate color" : "Regenerate colors";
 
   return (
-    <Container onClick={regenerateColors}>
+    <Container onClick={regenerateColors} onKeyDown={(e) => e.preventDefault()}>
       <p
         css={css`
           background: -webkit-linear-gradient(
@@ -32,7 +32,7 @@ const RegenerateButton = () => {
   );
 };
 
-const Container = styled.button`
+const Container = styled.div`
   background-color: #ffffff;
   font-size: 1.125rem;
   position: absolute;
@@ -45,6 +45,7 @@ const Container = styled.button`
   font-weight: var(--font-medium);
   cursor: pointer;
   transition: background-color 128ms ease;
+  user-select: none;
   @media screen and (hover: hover) {
     &:hover {
       background-color: #f1f1f1;

@@ -14,7 +14,7 @@ const HomePage = () => {
       Icon: Plus,
       onClick: addColor,
       tooltip: "Add a new color",
-      show: randomColors.length < MAX_NUMBER_OF_COLORS,
+      hide: randomColors.length >= MAX_NUMBER_OF_COLORS,
     },
   ];
 
@@ -32,8 +32,7 @@ const HomePage = () => {
 const Container = styled.main`
   height: 100vh;
   width: 100vw;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 1fr);
+  display: flex;
 `;
 
 export default HomePage;

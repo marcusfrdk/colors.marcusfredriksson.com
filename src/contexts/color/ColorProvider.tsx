@@ -35,14 +35,17 @@ const ColorProvider = ({ children }: Props) => {
     [setStateRandomColors]
   );
 
-  const regenerateColors: RegenerateColors = useCallback(() => {
-    const newRandomColors = stateRandomColors.map((color) => {
-      if (color.locked) return color;
-      return generateRandomColor();
-    });
-
-    setStateRandomColors(newRandomColors);
-  }, [stateRandomColors, setStateRandomColors]);
+  const regenerateColors: RegenerateColors = useCallback(
+    () =>
+      setStateRandomColors((rc) =>
+        rc.map((color) => {
+          console.log("Hello");
+          if (color.locked) return color;
+          return generateRandomColor();
+        })
+      ),
+    [setStateRandomColors]
+  );
 
   const toggleColorLock: ToggleColorLock = useCallback(
     (index: number) =>

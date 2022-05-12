@@ -3,11 +3,11 @@ import { css } from "@emotion/react";
 import { RandomColor } from "contexts/color/ColorContext";
 import { useLayoutEffect, useState } from "react";
 import getTextColorFromHex from "utils/getTextColorFromHex";
-import RandomColorButton from "./RandomColorButton";
 import { BsFillTrashFill } from "react-icons/bs";
 import useColor from "contexts/color/useColor";
 import getHoverColorFromHex from "utils/getHoverColorFromHex";
 import copyToClipboard from "utils/copyToClipboard";
+import Button from "./Button";
 const RandomColor = ({ color, index }: Props) => {
   const { removeColor, randomColors } = useColor();
 
@@ -33,15 +33,22 @@ const RandomColor = ({ color, index }: Props) => {
       onClick={() => copyToClipboard(color.hex)}
     >
       <HexColor>{color.hex}</HexColor>
-      <RandomColorButton
-        Icon={BsFillTrashFill}
-        hex={color.hex}
-        onClick={() => removeColor(index)}
-        show={randomColors.length > 1}
-      />
+      <ButtonContainer>
+        <Button
+          Icon={BsFillTrashFill}
+          hex={color.hex}
+          onClick={() => removeColor(index)}
+          hide={randomColors.length <= 1}
+        />
+      </ButtonContainer>
     </Container>
   );
 };
+
+const ButtonContainer = styled.div`
+  display: flex;
+  margin-top: 1rem;
+`;
 
 const Container = styled.div`
   display: flex;
@@ -50,6 +57,8 @@ const Container = styled.div`
   transition: all 256ms ease;
   cursor: pointer;
   user-select: none;
+  flex-direction: column;
+  width: 100%;
 `;
 
 const HexColor = styled.p`

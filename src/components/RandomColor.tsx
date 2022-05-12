@@ -4,7 +4,6 @@ import { RandomColor } from "contexts/color/ColorContext";
 import { useLayoutEffect, useState } from "react";
 import getTextColorFromHex from "utils/getTextColorFromHex";
 import useColor from "contexts/color/useColor";
-import getHoverColorFromHex from "utils/getHoverColorFromHex";
 import copyToClipboard from "utils/copyToClipboard";
 import Button from "./Button";
 import { BREAKPOINT_TABLET } from "utils/constants";
@@ -17,10 +16,8 @@ const RandomColor = ({ color, index }: Props) => {
   const { removeColor, randomColors, toggleColorLock } = useColor();
 
   const [stateTextColor, setStateTextColor] = useState("#ffffff");
-  const [stateHoverColor, setStateHoverColor] = useState("hsl(0, 0%, 100%)");
 
   useLayoutEffect(() => {
-    setStateHoverColor(getHoverColorFromHex(color.hex));
     setStateTextColor(getTextColorFromHex(color.hex));
   }, [color, setStateTextColor]);
 
@@ -29,11 +26,6 @@ const RandomColor = ({ color, index }: Props) => {
       css={css`
         background-color: ${color.hex};
         color: ${stateTextColor};
-        @media screen and (hover: hover) {
-          &:active {
-            background-color: ${stateHoverColor};
-          }
-        }
       `}
       onClick={() => copyToClipboard(color.hex)}
     >

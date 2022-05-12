@@ -20,14 +20,14 @@
   },
   "scripts": {
     "start": "cross-env NODE_ENV=production next start",
-    "build": "node scripts/getPages.js && next build",
+    "build": "next build",
     "dev": "cross-env NODE_ENV=development next dev",
     "analyze": "cross-env ANALYZE=true next build",
     "cypress": "start-server-and-test && cypress open",
     "jest": "jest",
     "test:e2e": "start-server-and-test start http://localhost:3000 'cypress run'",
     "test:unit": "jest",
-    "test": "yarn test:e2e && yarn test:unit",
+    "test": "npm run test:e2e && yarn test:unit",
     "lint": "next lint"
   },
   "dependencies": {

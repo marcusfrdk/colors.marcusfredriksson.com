@@ -7,13 +7,17 @@ import useColor from "contexts/color/useColor";
 import copyToClipboard from "utils/copyToClipboard";
 import Button from "./Button";
 import { BREAKPOINT_TABLET } from "utils/constants";
+import getHoverColorFromHex from "utils/getHoverColorFromHex";
+import useMessage from "contexts/message/useMessage";
 
 import { BsFillTrashFill } from "react-icons/bs";
+import { IoIosCopy as Copy } from "react-icons/io";
 import { AiFillLock as Lock, AiFillUnlock as Unlock } from "react-icons/ai";
 // import { FaLayerGroup as Layers } from "react-icons/fa";
 
 const RandomColor = ({ color, index }: Props) => {
   const { removeColor, randomColors, toggleColorLock } = useColor();
+  const { newToast } = useMessage();
 
   const [stateTextColor, setStateTextColor] = useState("#ffffff");
 
@@ -29,7 +33,27 @@ const RandomColor = ({ color, index }: Props) => {
       `}
       onClick={() => copyToClipboard(color.hex)}
     >
-      <HexColor>{color.hex}</HexColor>
+      <HexColor
+        onClick={() => {
+          const success = copyToClipboard(color.hex);
+          success
+            ? newToast("Copied value to clipboard")
+            : newToast("Failed to copy value to clipboard");
+        }}
+        css={css`
+          @media screen and (hover: hover) {
+            &:hover {
+              background-color: ${getHoverColorFromHex(color.hex)};
+            }
+          }
+          @media screen and (max-width: ${BREAKPOINT_TABLET}) {
+            margin: 0;
+          }
+        `}
+      >
+        <p>{color.hex}</p>
+        <Copy size="1rem" />
+      </HexColor>
       <ButtonContainer>
         <Button
           Icon={color.locked ? Lock : Unlock}
@@ -54,7 +78,6 @@ const RandomColor = ({ color, index }: Props) => {
 
 const ButtonContainer = styled.div`
   display: flex;
-  margin-top: 1rem;
 
   & > button {
     margin-top: 0 !important;
@@ -87,10 +110,19 @@ const Container = styled.div`
   }
 `;
 
-const HexColor = styled.p`
-  font-size: 1.25rem;
-  font-weight: var(--font-medium);
+const HexColor = styled.div`
   transition: font-size 128ms ease;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+
+  & > p {
+    font-size: 1.25rem;
+    font-weight: var(--font-medium);
+    margin-right: 0.5rem;
+  }
 `;
 
 type Props = {

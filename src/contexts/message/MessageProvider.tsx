@@ -67,7 +67,7 @@ const Toast = styled.p`
   user-select: none;
   border-radius: 999px;
   z-index: 1000;
-  padding: 1rem 2rem;
+  padding: 0.5rem 1.5rem;
   transition-property: opacity, top;
   transition: ${toastAnimationDuration}ms ease-in-out;
   top: 2rem;

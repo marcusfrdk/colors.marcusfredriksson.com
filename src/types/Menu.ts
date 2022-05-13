@@ -20,5 +20,6 @@ export const menu: MenuItem[] = [
     href: REPOSITORY_URL,
     Icon: Github,
     newTab: true,
+    mobileOnly: true,
   },
 ];

@@ -1,74 +1,24 @@
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import Link from "next/link";
-import { MenuItem } from "types/Menu";
-import { BREAKPOINT_TABLET, REPOSITORY_URL } from "utils/constants";
+import { BREAKPOINT_TABLET } from "utils/constants";
 import MobileMenu from "./MobileMenu";
-
-import { AiFillGithub as Github } from "react-icons/ai";
-import { IoMdColorFill as Colors } from "react-icons/io";
-import { FaLayerGroup as Shades } from "react-icons/fa";
+import Menu from "./Menu";
 
 const Header = () => {
-  const menu: MenuItem[] = [
-    { label: "Colors", href: "/", Icon: Colors },
-    { label: "Shades", href: "/shades", Icon: Shades },
-    {
-      label: "Source code",
-      href: REPOSITORY_URL,
-      Icon: Github,
-      newTab: true,
-    },
-  ];
-
   return (
     <Container>
-      <MobileMenu menu={menu} />
+      <MobileMenu />
       <Title>
-        Talmio <Gradient>Colors</Gradient>
+        <Link href="/">
+          <a>
+            Talmio <Gradient>Colors</Gradient>
+          </a>
+        </Link>
       </Title>
-      <DesktopMenu>
-        {menu.map(({ label, href }, index) => (
-          <li key={index}>
-            <Link href={href}>
-              <a>{label}</a>
-            </Link>
-          </li>
-        ))}
-        <a
-          href={REPOSITORY_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          css={css`
-            text-decoration: none;
-            color: #1c1c1c;
-          `}
-        >
-          <Github size="2rem" color="#1c1c1c" />
-        </a>
-      </DesktopMenu>
+      <Menu />
     </Container>
   );
 };
-
-const DesktopMenu = styled.ul`
-  display: flex;
-  align-items: center;
-  list-style: none;
-
-  a {
-    text-decoration: none;
-    color: #1c1c1c;
-  }
-
-  & > *:not(a) {
-    margin-right: 2rem;
-  }
-
-  @media screen and (max-width: ${BREAKPOINT_TABLET}) {
-    display: none;
-  }
-`;
 
 const Gradient = styled.span`
   background: -webkit-linear-gradient(
@@ -87,7 +37,13 @@ const Gradient = styled.span`
 const Title = styled.p`
   font-weight: var(--font-medium);
   position: absolute;
-  left: 2rem;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+
+  a {
+    text-decoration: none;
+    color: #1c1c1c;
+  }
 
   @media screen and (max-width: ${BREAKPOINT_TABLET}) {
     left: 50%;

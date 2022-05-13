@@ -29,7 +29,7 @@ const MobileMenu = () => {
       <CSSTransition {...props}>
         <Container>
           {menu.map(({ label, href, Icon, newTab }, index) => (
-            <li key={index}>
+            <li key={index} onClick={() => setStateIsVisible(false)}>
               <Link href={href}>
                 <a target={newTab ? "_blank" : "_self"}>
                   <Icon size="1.5rem" />

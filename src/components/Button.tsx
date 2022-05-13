@@ -1,13 +1,26 @@
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
+import useColor from "contexts/color/useColor";
 import { IconType } from "react-icons";
-import { PRIMARY_COLOR } from "utils/constants";
+import { BREAKPOINT_TABLET, PRIMARY_COLOR } from "utils/constants";
 
 const Button = ({ Icon, onClick, hex = PRIMARY_COLOR, hide }: Props) => {
+  const { randomColors } = useColor();
+
   return (
     <Container
       className={hide ? "hide" : ""}
       onClick={onClick}
       onKeyDown={(e) => (e.key === " " ? e.preventDefault() : null)}
+      css={
+        randomColors.length > 8 &&
+        css`
+          @media screen and (max-width: ${BREAKPOINT_TABLET}) {
+            height: 2rem;
+            width: 2rem;
+          }
+        `
+      }
     >
       <Icon size="50%" color={hex} />
     </Container>
@@ -25,6 +38,7 @@ const Container = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+
   @media screen and (hover: hover) {
     &:hover {
       background-color: #eaeaea;

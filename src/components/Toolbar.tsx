@@ -69,10 +69,11 @@ const Toolbar = () => {
       <Modal
         isVisible={stateModalIsVisible}
         setIsVisible={setStateModalIsVisible}
+        title="Reset colors"
       >
         <ModalText>
-          Are you sure you want to reset all the colors back to default? This
-          will remove all colors, including those that are locked.
+          Are you sure you want to reset everything back to default? This will
+          remove all colors, including those that are locked.
         </ModalText>
         <ButtonGroup>
           <ModalButton

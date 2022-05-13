@@ -4,7 +4,7 @@ import { CSSTransition } from "react-transition-group";
 
 const timeout = 512;
 
-const Modal = ({ children, isVisible, setIsVisible }: Props) => {
+const Modal = ({ children, isVisible, setIsVisible, title }: Props) => {
   const props = {
     in: isVisible,
     timeout,
@@ -17,11 +17,20 @@ const Modal = ({ children, isVisible, setIsVisible }: Props) => {
         <Backdrop onClick={() => setIsVisible(false)} />
       </CSSTransition>
       <CSSTransition {...props} unmountOnExit>
-        <Container>{children}</Container>
+        <Container>
+          {title && <Title>{title}</Title>}
+          {children}
+        </Container>
       </CSSTransition>
     </>
   );
 };
+
+const Title = styled.p`
+  font-size: 1.25rem;
+  font-weight: var(--font-medium);
+  margin-bottom: 0.5rem;
+`;
 
 const Container = styled.div`
   padding: 1.5rem;
@@ -87,6 +96,7 @@ type Props = {
   children: JSX.Element | JSX.Element[];
   isVisible: boolean;
   setIsVisible: Dispatch<SetStateAction<boolean>>;
+  title?: string;
 };
 
 export default Modal;

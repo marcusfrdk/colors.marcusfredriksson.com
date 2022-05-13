@@ -9,7 +9,7 @@ import ColorContext, {
   ToggleColorLock,
 } from "./ColorContext";
 
-export const MAX_NUMBER_OF_COLORS = 8;
+export const MAX_NUMBER_OF_COLORS = 12;
 
 const ColorProvider = ({ children }: Props) => {
   const [stateRandomColors, setStateRandomColors] = useState<RandomColor[]>([]);

@@ -7,6 +7,7 @@ const getColorsFromColorWheel = (
 ): string[] => {
   const hsl = hexToHsl(hex);
   const colors = deviations.map((dev) => {
+    if (dev === 0) return hex;
     const color = { ...hsl };
     if (dev !== 0) {
       color.l = color.l > 10 ? color.l - 10 : color.l;

@@ -16,7 +16,11 @@ const Menu = () => {
         .map(({ label, href }, index) => (
           <li key={index}>
             <Link href={href}>
-              <a className={router.asPath === href ? "active" : ""}>{label}</a>
+              <a
+                className={router.asPath.split("?")[0] === href ? "active" : ""}
+              >
+                {label}
+              </a>
             </Link>
           </li>
         ))}

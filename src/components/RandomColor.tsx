@@ -13,10 +13,12 @@ import useMessage from "contexts/message/useMessage";
 import { BsFillTrashFill } from "react-icons/bs";
 import { IoIosCopy as Copy } from "react-icons/io";
 import { AiFillLock as Lock, AiFillUnlock as Unlock } from "react-icons/ai";
+import { useRouter } from "next/router";
 
 const RandomColor = ({ color, index }: Props) => {
   const { removeColor, colors, toggleColorLock } = useColor();
   const { newToast } = useMessage();
+  const router = useRouter();
 
   const [stateTextColor, setStateTextColor] = useState("#ffffff");
 
@@ -25,13 +27,7 @@ const RandomColor = ({ color, index }: Props) => {
   }, [color, setStateTextColor]);
 
   return (
-    <Container
-      css={css`
-        background-color: ${color.hex};
-        color: ${stateTextColor};
-      `}
-      onClick={() => copyToClipboard(color.hex)}
-    >
+    <Container>
       <HexColor
         onClick={() => {
           const success = copyToClipboard(color.hex);
@@ -40,6 +36,7 @@ const RandomColor = ({ color, index }: Props) => {
             : newToast("Failed to copy value to clipboard");
         }}
         css={css`
+          color: ${stateTextColor};
           @media screen and (hover: hover) {
             &:hover {
               background-color: ${getHoverColorFromHex(color.hex)};
@@ -66,12 +63,32 @@ const RandomColor = ({ color, index }: Props) => {
           disabled={colors.length <= 1 || color.locked}
         />
       </ButtonContainer>
+      <Background
+        css={css`
+          background-color: ${color.hex};
+        `}
+        onClick={() =>
+          router.push(`/shades?color=${encodeURIComponent(color.hex)}`)
+        }
+      />
     </Container>
   );
 };
 
+const Background = styled.div`
+  background-color: red;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
+  position: relative;
+  z-index: 2;
 
   & > button {
     margin-top: 0 !important;
@@ -96,6 +113,7 @@ const Container = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  position: relative;
 
   @media screen and (max-width: ${BREAKPOINT_TABLET}) {
     flex-direction: row;
@@ -111,6 +129,8 @@ const HexColor = styled.div`
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
+  position: relative;
+  z-index: 2;
 
   & > p {
     font-size: 1.25rem;

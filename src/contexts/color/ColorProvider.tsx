@@ -36,9 +36,11 @@ const ColorProvider = ({ children }: Props) => {
 
   const updateCurrentState = useCallback(
     (newState: Color[]) => {
-      const newHistory = [...stateHistory].map((history, index) =>
-        index === stateHistoryIndex ? newState : history
-      );
+      const newHistory = [...stateHistory]
+        .slice(0, stateHistoryIndex + 1)
+        .map((history, index) =>
+          index === stateHistoryIndex ? newState : history
+        );
       setStateColors(newState);
       setStateHistory(newHistory);
       saveState(newHistory, stateHistoryIndex);

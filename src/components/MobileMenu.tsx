@@ -75,10 +75,7 @@ const ToggleButton = styled.button`
   background: none;
   cursor: pointer;
   transition: background-color 64ms ease;
-
-  & > svg {
-    fill: #1c1c1c;
-  }
+  color: #1c1c1c;
 
   @media screen and (max-width: ${BREAKPOINT_TABLET}) {
     display: flex;

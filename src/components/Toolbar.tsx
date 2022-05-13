@@ -22,10 +22,9 @@ const Toolbar = () => {
     resetColors,
     redoHistory,
     undoHistory,
-    history,
-    historyIndex,
     canRedo,
     canUndo,
+    canReset,
   } = useColor();
   const { hasChin } = useDevice();
 
@@ -38,13 +37,11 @@ const Toolbar = () => {
     setStateAllAdded(colors.length === MAX_NUMBER_OF_COLORS);
   }, [colors]);
 
-  console.log("History index", historyIndex);
-
   const buttons: ToolbarButton[] = [
     {
       Icon: Trash,
       onClick: () => setStateModalIsVisible(true),
-      disabled: colors.length <= 1,
+      disabled: !canReset,
     },
     {
       Icon: Spinner,
@@ -100,7 +97,8 @@ const Toolbar = () => {
       >
         <ModalText>
           Are you sure you want to reset everything back to default? This will
-          remove all colors, including those that are locked.
+          remove all colors, including those that are locked as well as your
+          entire history.
         </ModalText>
         <ButtonGroup>
           <ModalButton

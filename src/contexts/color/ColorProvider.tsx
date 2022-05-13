@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import generateRandomHex from "utils/generateRandomHex";
 import ColorContext, {
   AddColor,
@@ -18,7 +18,6 @@ import ColorContext, {
 
 const LOCALSTORAGE_HISTORY = "history";
 const LOCALSTORAGE_HISTORY_INDEX = "historyIndex";
-const LOCALSTORAGE_COLORS = "colors";
 
 const ColorProvider = ({ children }: Props) => {
   // STATE
@@ -30,236 +29,127 @@ const ColorProvider = ({ children }: Props) => {
   // FUNCTIONS
 
   // Support functions
-  const updateCurrentState = (newState: Color[]) => {
-    const newHistory = [...stateHistory].map((history, index) =>
-      index === stateHistoryIndex ? newState : history
-    );
-    setStateColors(newState);
-    setStateHistory(newHistory);
-  };
+  const saveState = useCallback((newHistory: History, newIndex: number) => {
+    localStorage.setItem(LOCALSTORAGE_HISTORY, JSON.stringify(newHistory));
+    localStorage.setItem(LOCALSTORAGE_HISTORY_INDEX, JSON.stringify(newIndex));
+  }, []);
 
-  const addColor: AddColor = () => {
+  const updateCurrentState = useCallback(
+    (newState: Color[]) => {
+      const newHistory = [...stateHistory].map((history, index) =>
+        index === stateHistoryIndex ? newState : history
+      );
+      setStateColors(newState);
+      setStateHistory(newHistory);
+      saveState(newHistory, stateHistoryIndex);
+    },
+    [saveState, stateHistory, stateHistoryIndex]
+  );
+
+  const addColor: AddColor = useCallback(() => {
     const newColor: Color = { hex: generateRandomHex(), locked: false };
     const newColors = [...stateColors, newColor];
     updateCurrentState(newColors);
-  };
+  }, [stateColors, updateCurrentState]);
 
-  const removeColor: RemoveColor = (index) => {
-    const newColors = [...stateColors].filter((_, i) => i !== index);
-    updateCurrentState(newColors);
-  };
+  const removeColor: RemoveColor = useCallback(
+    (index) => {
+      const newColors = [...stateColors].filter((_, i) => i !== index);
+      updateCurrentState(newColors);
+    },
+    [stateColors, updateCurrentState]
+  );
 
-  const resetColors: ResetColors = () => {
-    setStateColors([]);
-    setStateHistory([]);
+  const resetColors: ResetColors = useCallback(() => {
+    const newColors = [{ hex: generateRandomHex(), locked: false }];
+    const newHistory = [newColors];
+    setStateHistory(newHistory);
     setStateHistoryIndex(0);
+    setStateColors(newHistory[0]);
     localStorage.removeItem(LOCALSTORAGE_HISTORY);
     localStorage.removeItem(LOCALSTORAGE_HISTORY_INDEX);
-    localStorage.removeItem(LOCALSTORAGE_COLORS);
-  };
+  }, []);
 
-  const toggleColorLock: ToggleColorLock = (index) => {
-    const newColors = [...stateColors].map((color, i) =>
-      i === index ? { ...color, locked: !color.locked } : color
-    );
-    updateCurrentState(newColors);
-  };
+  const toggleColorLock: ToggleColorLock = useCallback(
+    (index) => {
+      const newColors = [...stateColors].map((color, i) =>
+        i === index ? { ...color, locked: !color.locked } : color
+      );
+      updateCurrentState(newColors);
+    },
+    [stateColors, updateCurrentState]
+  );
 
   // History altering functions
-  const regenerateColors: RegenerateColors = () => {
+  const regenerateColors: RegenerateColors = useCallback(() => {
     const newColors = [...stateColors].map((color) =>
       color.locked ? color : { ...color, hex: generateRandomHex() }
     );
-    const newHistory = [...stateHistory, newColors];
-    setStateColors(newColors);
+    const newHistory = [...stateHistory].slice(0, stateHistoryIndex + 1);
+    newHistory.push(newColors);
+    const newIndex = newHistory.length - 1;
+
     setStateHistory(newHistory);
-    setStateHistoryIndex(newHistory.length - 1);
-  };
+    setStateHistoryIndex(newIndex);
+    setStateColors(newHistory[newIndex]);
+    saveState(newHistory, newIndex);
+  }, [stateColors, stateHistory, stateHistoryIndex, saveState]);
 
-  const undoHistory: UndoHistory = () => {
-    if (stateHistoryIndex === 0) return;
-    const newColors = stateHistory[stateHistoryIndex - 1];
-    setStateHistoryIndex(stateHistoryIndex - 1);
+  const undoHistory: UndoHistory = useCallback(() => {
+    if (stateHistoryIndex <= 0) return;
+    const newIndex = stateHistoryIndex - 1;
+    const newColors = stateHistory[newIndex];
+    setStateHistoryIndex(newIndex);
     setStateColors(newColors);
-  };
+    saveState(stateHistory, newIndex);
+  }, [stateHistoryIndex, stateHistory, saveState]);
 
-  const redoHistory: RedoHistory = () => {
-    if (stateHistoryIndex >= stateHistory.length) return;
-    const newColors = stateHistory[stateHistoryIndex];
-    setStateHistoryIndex(stateHistoryIndex + 1);
+  const redoHistory: RedoHistory = useCallback(() => {
+    if (stateHistoryIndex >= stateHistory.length - 1) return;
+    const newIndex = stateHistoryIndex + 1;
+    const newColors = stateHistory[newIndex];
+    setStateHistoryIndex(newIndex);
     setStateColors(newColors);
-  };
-
-  useEffect(() => {
-    console.log("History", stateHistory);
-    console.log(
-      "History index",
-      stateHistoryIndex,
-      "out of",
-      stateHistory.length
-    );
-  }, [stateHistory, stateHistoryIndex, stateColors]);
+    saveState(stateHistory, newIndex);
+  }, [stateHistoryIndex, stateHistory, saveState]);
 
   // EFFECTS
-
-  // // Save data periodically
-  // useEffect(() => {}, []);
 
   // Load data on first load
   useEffect(() => {
     try {
-      if (stateLoaded) throw new Error("Already loaded");
-      const history = localStorage.getItem(LOCALSTORAGE_HISTORY);
-      const historyIndex = localStorage.getItem(LOCALSTORAGE_HISTORY_INDEX);
-      const colors = localStorage.getItem(LOCALSTORAGE_COLORS);
-      setStateHistory(history ? JSON.parse(history) : []);
-      setStateHistoryIndex(historyIndex ? parseInt(historyIndex) : 0);
-      setStateColors(
-        colors
-          ? JSON.parse(colors)
-          : [{ hex: generateRandomHex(), locked: false }]
+      const storedHistory = localStorage.getItem(LOCALSTORAGE_HISTORY);
+      const storedHistoryIndex = localStorage.getItem(
+        LOCALSTORAGE_HISTORY_INDEX
       );
+
+      if (!storedHistory || !storedHistoryIndex) return resetColors();
+
+      const history = JSON.parse(storedHistory);
+      const historyIndex = parseInt(storedHistoryIndex) ?? 0;
+      const colors = history[historyIndex];
+
+      setStateHistory(history ? history : []);
+      setStateHistoryIndex(historyIndex);
+      setStateColors(colors ?? [{ hex: generateRandomHex(), locked: false }]);
     } catch (err) {
-      const color = { hex: generateRandomHex(), locked: false };
-      setStateHistory([[color]]);
-      setStateHistoryIndex(0);
-      setStateColors([color]);
+      process.env.NODE_ENV === "development" && console.log(err);
+      resetColors();
     }
     setStateLoaded(true);
-  }, [stateLoaded]);
+  }, [stateLoaded, resetColors]);
 
-  // // Regenerate colors when spacebar is pressed
-  // useEffect(() => {}, []);
+  // Regenerate colors when spacebar is pressed
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === " ") regenerateColors();
+      if (event.key === "ArrowRight") redoHistory();
+      if (event.key === "ArrowLeft") undoHistory();
+    };
 
-  // Functions that alter history
-  // const regenerateColors -> Cuts history in place, appends new colors to end of history
-  // const redoHistory -> Sets history index to current + 1
-  // const undoHistory -> Sets history index to current - 1
-
-  // Functions that change current state
-  // removeColor -> Removes color from stateRandomColors
-  // addColor -> Adds color to stateRandomColors
-  // toggleColorLock -> Toggles color lock on color
-  // resetColors -> Resets all state to default values
-
-  // const appendHistory = useCallback(() => {
-  //   const newHistory = [...stateHistory, stateRandomColors];
-  //   const latestIndex = newHistory.length - 1;
-  //   setStateHistory(newHistory);
-  //   setStateHistoryIndex(latestIndex);
-  //   return [newHistory, latestIndex];
-  // }, [stateHistory, stateRandomColors, setStateHistory, setStateHistoryIndex]);
-
-  // const cutHistory = useCallback(() => {
-  //   const newHistory = [
-  //     ...stateHistory.slice(0, stateHistoryIndex),
-  //     stateRandomColors,
-  //   ];
-  //   const latestIndex = newHistory.length - 1;
-  //   setStateHistory(newHistory);
-  //   setStateHistoryIndex(latestIndex);
-  //   return [newHistory, latestIndex, stateHistoryIndex];
-  // }, [
-  //   stateHistory,
-  //   stateHistoryIndex,
-  //   stateRandomColors,
-  //   setStateHistory,
-  //   setStateHistoryIndex,
-  // ]);
-
-  // const generateRandomColor = useCallback((): RandomColor => {
-  //   return {
-  //     hex: generateRandomHex(),
-  //     locked: false,
-  //   };
-  // }, []);
-
-  // const addColor: AddColor = useCallback(() => {
-  //   setStateRandomColors((rc) =>
-  //     rc.length < MAX_NUMBER_OF_COLORS ? [...rc, generateRandomColor()] : rc
-  //   );
-  //   appendHistory();
-  // }, [setStateRandomColors, generateRandomColor, appendHistory]);
-
-  // const removeColor: RemoveColor = useCallback(
-  //   (index) => {
-  //     setStateRandomColors((rc) => rc.filter((_, i) => i !== index));
-  //   },
-  //   [setStateRandomColors]
-  // );
-
-  // const resetColors: ResetColors = useCallback(() => {
-  //   const defaultState = [generateRandomColor()];
-  //   setStateRandomColors(defaultState);
-  //   setStateHistory([]);
-  //   localStorage.removeItem("randomColors");
-  //   localStorage.removeItem("history");
-  // }, [setStateRandomColors, generateRandomColor]);
-
-  // const regenerateColors: RegenerateColors = useCallback(() => {
-  //   const newColors = stateRandomColors.map((color) => {
-  //     if (color.locked) return color;
-  //     return generateRandomColor();
-  //   });
-  //   setStateHistory((history) => [...history, stateRandomColors]);
-  //   setStateRandomColors(newColors);
-  //   cutHistory();
-  // }, [
-  //   setStateRandomColors,
-  //   generateRandomColor,
-  //   setStateHistory,
-  //   stateRandomColors,
-  //   cutHistory,
-  // ]);
-
-  // const toggleColorLock: ToggleColorLock = useCallback(
-  //   (index: number) =>
-  //     setStateRandomColors((rc) =>
-  //       rc.map((c, i) => (i === index ? { ...c, locked: !c.locked } : c))
-  //     ),
-  //   [setStateRandomColors]
-  // );
-
-  // const undoHistory: UndoHistory = useCallback(() => {
-  //   console.log("Current history:", JSON.stringify(stateHistory));
-  //   console.log("Undo");
-  // }, [stateHistory]);
-
-  // const redoHistory: RedoHistory = useCallback(() => {
-  //   console.log("Current history:", JSON.stringify(stateHistory));
-  //   console.log("Redo");
-  // }, [stateHistory]);
-
-  // useEffect(() => {
-  //   // Check if spacebar is pressed
-  //   const handleSpacebar = (event: KeyboardEvent) =>
-  //     event.key === " " ? regenerateColors() : undefined;
-  //   window.addEventListener("keydown", handleSpacebar);
-  //   return () => window.removeEventListener("keydown", handleSpacebar);
-  // }, [regenerateColors]);
-
-  // // Load data
-  // useEffect(() => {
-  //   const defaultData = [{ hex: generateRandomHex(), locked: false }];
-
-  //   try {
-  //     const data = localStorage.getItem("randomColors");
-  //     if (data) {
-  //       setStateRandomColors(JSON.parse(data));
-  //     } else {
-  //       setStateRandomColors(defaultData);
-  //     }
-  //   } catch (err) {
-  //     // If data is not valid json, JSON.parse throws error
-  //     setStateRandomColors(defaultData);
-  //   }
-  // }, [setStateRandomColors]);
-
-  // // Save data
-  // useEffect(() => {
-  //   localStorage.setItem("randomColors", JSON.stringify(stateRandomColors));
-  //   localStorage.setItem("history", JSON.stringify(stateHistory));
-  // }, [stateRandomColors, stateHistory]);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [regenerateColors, undoHistory, redoHistory]);
 
   return (
     <ColorContext.Provider
@@ -274,8 +164,9 @@ const ColorProvider = ({ children }: Props) => {
         regenerateColors,
         undoHistory,
         redoHistory,
-        canRedo: stateHistoryIndex < stateHistory.length,
+        canRedo: stateHistoryIndex < stateHistory.length - 1,
         canUndo: stateHistoryIndex > 0,
+        canReset: stateColors.length > 1 || stateHistory.length > 1,
       }}
     >
       {children}

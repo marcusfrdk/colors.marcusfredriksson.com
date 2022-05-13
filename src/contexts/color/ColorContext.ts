@@ -31,6 +31,7 @@ export interface IColorContext {
   toggleColorLock: ToggleColorLock;
   canRedo: boolean;
   canUndo: boolean;
+  canReset: boolean;
 }
 
 const ColorContext = createContext<IColorContext>({
@@ -46,6 +47,7 @@ const ColorContext = createContext<IColorContext>({
   resetColors: () => undefined,
   canRedo: false,
   canUndo: false,
+  canReset: false,
 });
 
 export default ColorContext;

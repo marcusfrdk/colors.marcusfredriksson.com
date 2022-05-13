@@ -52,7 +52,7 @@ const Toolbar = () => {
       Icon: Plus,
       onClick: addColor,
       disabled: stateAllAdded,
-      buttonSize: "65%",
+      buttonSize: "2rem",
     },
     {
       Icon: Undo,
@@ -70,7 +70,7 @@ const Toolbar = () => {
     <Container>
       {buttons.map(
         (
-          { Icon, onClick, disabled, hex = "#777777", buttonSize = "50%" },
+          { Icon, onClick, disabled, hex = "#777777", buttonSize = "1.5rem" },
           index
         ) => (
           <Button

@@ -3,15 +3,15 @@ import useColor from "contexts/color/useColor";
 import { IconType } from "react-icons";
 import { MAX_NUMBER_OF_COLORS } from "contexts/color/ColorProvider";
 import { useLayoutEffect, useState } from "react";
-
-import { ImSpinner11 as Spinner } from "react-icons/im";
-import { AiOutlinePlus as Plus } from "react-icons/ai";
-import { BsFillTrashFill as Trash } from "react-icons/bs";
 import Modal from "./Modal";
 import ModalText from "./ModalText";
 import ModalButton from "./ModalButton";
 import useDevice from "hooks/useDevice";
 import { css } from "@emotion/react";
+
+import { ImSpinner11 as Spinner } from "react-icons/im";
+import { AiOutlinePlus as Plus } from "react-icons/ai";
+import { BsFillTrashFill as Trash } from "react-icons/bs";
 
 const Toolbar = () => {
   const { addColor, regenerateColors, randomColors, resetColors } = useColor();

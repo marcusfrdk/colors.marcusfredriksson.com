@@ -4,12 +4,12 @@ import useColor from "contexts/color/useColor";
 import { IconType } from "react-icons";
 import { BREAKPOINT_TABLET, PRIMARY_COLOR } from "utils/constants";
 
-const Button = ({ Icon, onClick, hex = PRIMARY_COLOR, hide }: Props) => {
+const Button = ({ Icon, onClick, hex = PRIMARY_COLOR, disabled }: Props) => {
   const { randomColors } = useColor();
 
   return (
     <Container
-      className={hide ? "hide" : ""}
+      disabled={disabled}
       onClick={onClick}
       onKeyDown={(e) => (e.key === " " ? e.preventDefault() : null)}
       css={
@@ -48,7 +48,7 @@ const Container = styled.button`
     }
   }
 
-  &.hide {
+  &:disabled {
     height: 0;
     width: 0;
     margin: 0 !important;
@@ -63,7 +63,7 @@ type Props = {
   Icon: IconType;
   onClick: () => void;
   hex?: string;
-  hide?: boolean;
+  disabled?: boolean;
 };
 
 export default Button;

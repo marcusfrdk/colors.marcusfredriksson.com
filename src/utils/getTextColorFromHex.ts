@@ -1,7 +1,7 @@
 import isHex from "./isHex";
 
 const white = "#ffffff";
-const black = "#000000";
+const black = "#1c1c1c";
 
 // Function logic taken from https://stackoverflow.com/a/41491220
 

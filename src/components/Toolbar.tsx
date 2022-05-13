@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import useColor from "contexts/color/useColor";
 import { IconType } from "react-icons";
 import { MAX_NUMBER_OF_COLORS } from "contexts/color/ColorProvider";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import ModalText from "./ModalText";
 import ModalButton from "./ModalButton";
@@ -21,7 +21,7 @@ const Toolbar = () => {
   const [stateAllAdded, setStateAllAdded] = useState(false);
   const [stateModalIsVisible, setStateModalIsVisible] = useState(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setStateAllLocked(randomColors.every((c) => c.locked));
     setStateAllAdded(randomColors.length === MAX_NUMBER_OF_COLORS);
   }, [randomColors]);
@@ -54,7 +54,10 @@ const Toolbar = () => {
         ) => (
           <Button
             key={index}
-            onClick={onClick}
+            onMouseDown={onClick}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") onClick();
+            }}
             disabled={disabled}
             css={css`
               height: ${hasChin

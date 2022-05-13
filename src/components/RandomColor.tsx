@@ -63,7 +63,7 @@ const RandomColor = ({ color, index }: Props) => {
           Icon={BsFillTrashFill}
           hex={color.hex}
           onClick={() => removeColor(index)}
-          hide={randomColors.length <= 1 || color.locked}
+          disabled={randomColors.length <= 1 || color.locked}
         />
       </ButtonContainer>
     </Container>

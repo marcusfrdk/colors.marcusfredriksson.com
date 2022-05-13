@@ -5,7 +5,7 @@ import { IconType } from "react-icons";
 import { BREAKPOINT_TABLET, PRIMARY_COLOR } from "utils/constants";
 
 const Button = ({ Icon, onClick, hex = PRIMARY_COLOR, disabled }: Props) => {
-  const { randomColors } = useColor();
+  const { colors } = useColor();
 
   return (
     <Container
@@ -13,7 +13,7 @@ const Button = ({ Icon, onClick, hex = PRIMARY_COLOR, disabled }: Props) => {
       onClick={onClick}
       onKeyDown={(e) => (e.key === " " ? e.preventDefault() : null)}
       css={
-        randomColors.length > 8 &&
+        colors.length > 8 &&
         css`
           @media screen and (max-width: ${BREAKPOINT_TABLET}) {
             height: 2rem;

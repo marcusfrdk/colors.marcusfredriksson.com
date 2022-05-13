@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
 import useColor from "contexts/color/useColor";
 import { IconType } from "react-icons";
-import { MAX_NUMBER_OF_COLORS } from "contexts/color/ColorProvider";
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import ModalText from "./ModalText";
@@ -12,9 +11,22 @@ import { css } from "@emotion/react";
 import { ImSpinner11 as Spinner } from "react-icons/im";
 import { AiOutlinePlus as Plus } from "react-icons/ai";
 import { BsFillTrashFill as Trash } from "react-icons/bs";
+import { IoMdRedo as Redo, IoMdUndo as Undo } from "react-icons/io";
+import { MAX_NUMBER_OF_COLORS } from "utils/constants";
 
 const Toolbar = () => {
-  const { addColor, regenerateColors, randomColors, resetColors } = useColor();
+  const {
+    addColor,
+    regenerateColors,
+    colors,
+    resetColors,
+    redoHistory,
+    undoHistory,
+    history,
+    historyIndex,
+    canRedo,
+    canUndo,
+  } = useColor();
   const { hasChin } = useDevice();
 
   const [stateAllLocked, setStateAllLocked] = useState(false);
@@ -22,15 +34,17 @@ const Toolbar = () => {
   const [stateModalIsVisible, setStateModalIsVisible] = useState(false);
 
   useEffect(() => {
-    setStateAllLocked(randomColors.every((c) => c.locked));
-    setStateAllAdded(randomColors.length === MAX_NUMBER_OF_COLORS);
-  }, [randomColors]);
+    setStateAllLocked(colors.every((c) => c.locked));
+    setStateAllAdded(colors.length === MAX_NUMBER_OF_COLORS);
+  }, [colors]);
+
+  console.log("History index", historyIndex);
 
   const buttons: ToolbarButton[] = [
     {
       Icon: Trash,
       onClick: () => setStateModalIsVisible(true),
-      disabled: randomColors.length <= 1,
+      disabled: colors.length <= 1,
     },
     {
       Icon: Spinner,
@@ -42,6 +56,16 @@ const Toolbar = () => {
       onClick: addColor,
       disabled: stateAllAdded,
       buttonSize: "65%",
+    },
+    {
+      Icon: Undo,
+      onClick: undoHistory,
+      disabled: !canUndo,
+    },
+    {
+      Icon: Redo,
+      onClick: redoHistory,
+      disabled: !canRedo,
     },
   ];
 

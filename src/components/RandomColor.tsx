@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { RandomColor } from "contexts/color/ColorContext";
+import { Color } from "contexts/color/ColorContext";
 import { useLayoutEffect, useState } from "react";
 import getTextColorFromHex from "utils/getTextColorFromHex";
 import useColor from "contexts/color/useColor";
@@ -15,7 +15,7 @@ import { IoIosCopy as Copy } from "react-icons/io";
 import { AiFillLock as Lock, AiFillUnlock as Unlock } from "react-icons/ai";
 
 const RandomColor = ({ color, index }: Props) => {
-  const { removeColor, randomColors, toggleColorLock } = useColor();
+  const { removeColor, colors, toggleColorLock } = useColor();
   const { newToast } = useMessage();
 
   const [stateTextColor, setStateTextColor] = useState("#ffffff");
@@ -63,7 +63,7 @@ const RandomColor = ({ color, index }: Props) => {
           Icon={BsFillTrashFill}
           hex={color.hex}
           onClick={() => removeColor(index)}
-          disabled={randomColors.length <= 1 || color.locked}
+          disabled={colors.length <= 1 || color.locked}
         />
       </ButtonContainer>
     </Container>
@@ -120,7 +120,7 @@ const HexColor = styled.div`
 `;
 
 type Props = {
-  color: RandomColor;
+  color: Color;
   index: number;
 };
 

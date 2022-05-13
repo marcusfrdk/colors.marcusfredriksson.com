@@ -6,7 +6,7 @@ import { BREAKPOINT_TABLET } from "utils/constants";
 import Head from "next/head";
 
 const HomePage = () => {
-  const { randomColors } = useColor();
+  const { colors } = useColor();
 
   return (
     <Container>
@@ -18,7 +18,7 @@ const HomePage = () => {
         />
       </Head>
       <ColorContainer>
-        {randomColors.map((color, index) => (
+        {colors.map((color, index) => (
           <RandomColor color={color} key={index} index={index} />
         ))}
       </ColorContainer>

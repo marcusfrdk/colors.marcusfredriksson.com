@@ -10,9 +10,12 @@ import { BsFillTrashFill as Trash } from "react-icons/bs";
 import Modal from "./Modal";
 import ModalText from "./ModalText";
 import ModalButton from "./ModalButton";
+import useDevice from "hooks/useDevice";
+import { css } from "@emotion/react";
 
 const Toolbar = () => {
   const { addColor, regenerateColors, randomColors, resetColors } = useColor();
+  const { hasChin } = useDevice();
 
   const [stateAllLocked, setStateAllLocked] = useState(false);
   const [stateAllAdded, setStateAllAdded] = useState(false);
@@ -49,7 +52,16 @@ const Toolbar = () => {
           { Icon, onClick, disabled, hex = "#777777", buttonSize = "50%" },
           index
         ) => (
-          <Button key={index} onClick={onClick} disabled={disabled}>
+          <Button
+            key={index}
+            onClick={onClick}
+            disabled={disabled}
+            css={css`
+              height: ${hasChin
+                ? "calc(var(--toolbar-height) - 3rem)"
+                : "calc(var(--toolbar-height) - 1rem)"};
+            `}
+          >
             <Icon size={buttonSize} color={hex} />
           </Button>
         )
@@ -90,7 +102,6 @@ const ButtonGroup = styled.div`
 `;
 
 const Button = styled.button`
-  height: 100%;
   width: 100%;
   background-color: #eaeaea;
   border: none;

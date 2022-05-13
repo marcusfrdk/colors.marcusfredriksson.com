@@ -1,7 +1,10 @@
 import { Global, css } from "@emotion/react";
+import useDevice from "hooks/useDevice";
 import { BREAKPOINT_TABLET } from "utils/constants";
 
 const GlobalStyles = () => {
+  const { hasChin } = useDevice();
+
   return (
     <Global
       styles={css`
@@ -40,7 +43,7 @@ const GlobalStyles = () => {
           --viewport-height: 100vh;
 
           --header-height: 4rem;
-          --toolbar-height: 4rem;
+          --toolbar-height: ${hasChin ? "6rem" : "4rem"};
 
           @media screen and (max-width: ${BREAKPOINT_TABLET}) {
             --header-height: 3rem;

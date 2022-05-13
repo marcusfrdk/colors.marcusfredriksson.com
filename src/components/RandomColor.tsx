@@ -13,7 +13,6 @@ import useMessage from "contexts/message/useMessage";
 import { BsFillTrashFill } from "react-icons/bs";
 import { IoIosCopy as Copy } from "react-icons/io";
 import { AiFillLock as Lock, AiFillUnlock as Unlock } from "react-icons/ai";
-// import { FaLayerGroup as Layers } from "react-icons/fa";
 
 const RandomColor = ({ color, index }: Props) => {
   const { removeColor, randomColors, toggleColorLock } = useColor();
@@ -37,7 +36,7 @@ const RandomColor = ({ color, index }: Props) => {
         onClick={() => {
           const success = copyToClipboard(color.hex);
           success
-            ? newToast("Copied value to clipboard")
+            ? newToast(`'${color.hex}' copied to clipboard`)
             : newToast("Failed to copy value to clipboard");
         }}
         css={css`
@@ -60,11 +59,6 @@ const RandomColor = ({ color, index }: Props) => {
           onClick={() => toggleColorLock(index)}
           hex={color.hex}
         />
-        {/* <Button
-          Icon={Layers}
-          onClick={() => console.log("Using layers")}
-          hex={color.hex}
-        /> */}
         <Button
           Icon={BsFillTrashFill}
           hex={color.hex}

@@ -19,6 +19,9 @@ const MessageProvider = ({ children }: Props) => {
 
     setStateToastQueue((queue) => ({ ...queue, [id]: toast }));
 
+    // 1. Set toast to visible
+    // 2. After set duration, set toast to hidden
+    // 3. After animation, remove toast from queue
     setTimeout(() => {
       setStateToastQueue((queue) => ({
         ...queue,

@@ -38,7 +38,9 @@ const ShadesPage = ({
         <MainColor
           css={css`
             background-color: ${hex};
-            color: ${getTextColorFromHex(hex)};
+            * {
+              color: ${getTextColorFromHex(hex)};
+            }
           `}
         >
           <p

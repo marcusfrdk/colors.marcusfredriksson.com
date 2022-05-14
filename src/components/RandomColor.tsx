@@ -36,7 +36,9 @@ const RandomColor = ({ color, index }: Props) => {
             : newToast("Failed to copy value to clipboard");
         }}
         css={css`
-          color: ${stateTextColor};
+          * {
+            color: ${stateTextColor} !important;
+          }
           @media screen and (hover: hover) {
             &:hover {
               background-color: ${getHoverColorFromHex(color.hex)};
@@ -76,7 +78,6 @@ const RandomColor = ({ color, index }: Props) => {
 };
 
 const Background = styled.div`
-  background-color: red;
   height: 100%;
   width: 100%;
   position: absolute;

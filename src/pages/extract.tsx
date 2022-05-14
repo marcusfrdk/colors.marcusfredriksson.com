@@ -107,6 +107,7 @@ const ExtractPage = () => {
             <InformationContainer
               onDragOver={handleOnDragOver}
               onDrop={handleUpload}
+              className="information"
             >
               <InformationButton>
                 <Info size="0.75rem" />
@@ -199,6 +200,7 @@ const PreviewContainer = styled.div<{
       hexToHsl(props.color).l > 75 ? "#00000015" : props.shadowColor + "75"};
 
   & > div {
+    transition-delay: ${timeout}ms;
     opacity: 1;
   }
 
@@ -220,6 +222,7 @@ const PreviewContainer = styled.div<{
     width: ${(props) => props.width}px;
     height: ${(props) => props.height}px;
     & > div {
+      transition: none !important;
       opacity: 1;
     }
   }
@@ -227,6 +230,7 @@ const PreviewContainer = styled.div<{
     height: 0;
     width: 0;
     & > div {
+      transition: none !important;
       opacity: 0;
     }
   }
@@ -282,6 +286,7 @@ const PreUploadInformation = styled.div`
   & > p.error {
     color: var(--red-400);
     margin-top: 1rem;
+    max-width: calc(100vw - 4rem);
   }
 `;
 
@@ -299,7 +304,8 @@ const InformationButton = styled.div`
 const InformationText = styled.p`
   background-color: var(--neutrals-0);
   padding: 1rem;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
+  border-top-right-radius: 0.25rem;
   color: var(--weak);
   position: absolute;
   top: 3rem;
@@ -309,13 +315,14 @@ const InformationText = styled.p`
   pointer-events: none;
   opacity: 0;
   box-shadow: 0 0 1rem 0.5rem #1c1c1c15;
+  transition: opacity 256ms ease;
 `;
 
 const InformationContainer = styled.div`
   position: absolute;
   top: 0;
   right: 0;
-  padding: 1.5rem;
+  padding: 1rem;
   transition: opacity ${timeout}ms ease;
   user-select: none;
   &:hover {

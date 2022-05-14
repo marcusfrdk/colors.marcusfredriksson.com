@@ -104,7 +104,7 @@ const Toolbar = () => {
         <ModalText>
           Are you sure you want to reset everything back to default? This will
           remove all colors, including those that are locked as well as your
-          entire history.
+          entire history. This will NOT reset your saved colors.
         </ModalText>
         <ButtonGroup>
           <ModalButton

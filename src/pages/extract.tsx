@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import SelectNumberOfColors from "components/SelectNumberOfColors";
 import ExtractedColors from "components/ExtractedColors";
 import getImageDimensions from "utils/getImageDimensions";
-import { useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { prominent } from "color.js";
 import { CSSTransition } from "react-transition-group";
 
@@ -14,6 +14,7 @@ import {
 import hexToHsl from "utils/hexToHsl";
 import SEO from "components/SEO";
 import ExtractInformation from "components/ExtractInformation";
+import { FaTimes as Close } from "react-icons/fa";
 
 const ExtractPage = () => {
   const [statePreviewUrl, setStatePreviewUrl] = useState<string>("");
@@ -28,69 +29,91 @@ const ExtractPage = () => {
 
   const browserRef = useRef<HTMLInputElement>(null);
 
-  const handleOnDragOver = (e: any) => {
+  const handleOnDragOver = useCallback((e: any) => {
     e.preventDefault();
-  };
+  }, []);
 
-  const handleOnClick = () =>
-    browserRef?.current ? browserRef.current.click() : null;
+  const handleOnClick = useCallback(
+    () => (browserRef?.current ? browserRef.current.click() : null),
+    [browserRef]
+  );
 
-  const handleUpload = async (e: any) => {
-    e.preventDefault();
+  const handleClose = useCallback(() => {
+    setStateHasChanged(false);
+    setStateError(false);
+    setStateImageIsLoaded(false);
+    setStateIsLoading(false);
 
-    try {
-      const file = e.target.files ? e.target.files[0] : e.dataTransfer.files[0];
-      if (!file) return;
+    if (browserRef?.current) {
+      browserRef.current.value = "";
+    }
 
-      setStateIsLoading(true);
-      setStateImageIsLoaded(false);
-      setStateHasChanged(true);
-      setStateError(false);
-
-      const url = URL.createObjectURL(file);
-      const colors = (await prominent(url, {
-        format: "hex",
-        amount: MAX_NUMBER_OF_EXTRACT_COLORS,
-      })) as string[];
-
-      const img = new Image();
-      img.src = url;
-      img.onload = () => {
-        const maxWidth =
-          window.innerWidth -
-          parseFloat(getComputedStyle(document.documentElement).fontSize) * 2;
-        const maxHeight = window.innerHeight / 2;
-        const [width, height] = getImageDimensions(
-          img.width,
-          img.height,
-          maxWidth,
-          maxHeight
-        );
-
-        setTimeout(() => {
-          setStatePreviewUrl(url);
-          setStateColors(colors);
-          setStateWidth(width);
-          setStateHeight(height);
-          setStateImageIsLoaded(true);
-        }, EXTRACT_ANIMATION_TIMEOUT);
-      };
-    } catch (err) {
-      process.env.NODE_ENV === "development" && console.log(err);
-      setStateHasChanged(false);
-      setStateImageIsLoaded(false);
+    setTimeout(() => {
       setStatePreviewUrl("");
       setStateColors([]);
-      setStateError(true);
-    }
-    setStateIsLoading(false);
-  };
+    }, EXTRACT_ANIMATION_TIMEOUT);
+  }, []);
 
-  const functionProps = {
-    onDragOver: handleOnDragOver,
-    onDrop: handleUpload,
-    onClick: handleOnClick,
-  };
+  const handleUpload = useCallback(
+    async (e: any) => {
+      e.preventDefault();
+      setStateIsLoading(true);
+
+      try {
+        const file = e.target.files
+          ? e.target.files[0]
+          : e.dataTransfer.files[0];
+
+        if (!file) return;
+
+        setStateImageIsLoaded(false);
+        setStateHasChanged(true);
+        setStateError(false);
+
+        const url = URL.createObjectURL(file);
+        const colors = (await prominent(url, {
+          format: "hex",
+          amount: MAX_NUMBER_OF_EXTRACT_COLORS,
+        })) as string[];
+
+        const img = new Image();
+        img.src = url;
+        img.onload = () => {
+          const maxWidth =
+            window.innerWidth -
+            parseFloat(getComputedStyle(document.documentElement).fontSize) * 2;
+          const maxHeight = window.innerHeight / 2;
+          const [width, height] = getImageDimensions(
+            img.width,
+            img.height,
+            maxWidth,
+            maxHeight
+          );
+
+          setTimeout(() => {
+            setStatePreviewUrl(url);
+            setStateColors(colors);
+            setStateWidth(width);
+            setStateHeight(height);
+            setStateImageIsLoaded(true);
+          }, EXTRACT_ANIMATION_TIMEOUT);
+        };
+      } catch (err) {
+        process.env.NODE_ENV === "development" && console.log(err);
+        handleClose();
+      }
+      setStateIsLoading(false);
+    },
+    [handleClose]
+  );
+
+  const functionProps = useMemo(() => {
+    return {
+      onDragOver: handleOnDragOver,
+      onDrop: handleUpload,
+      onClick: handleOnClick,
+    };
+  }, [handleOnDragOver, handleUpload, handleOnClick]);
 
   return (
     <Page>
@@ -112,6 +135,11 @@ const ExtractPage = () => {
             height={stateHeight}
           >
             <Preview src={statePreviewUrl} alt="" {...functionProps} />
+            <CloseButton {...functionProps} onClick={handleClose}>
+              <div>
+                <Close size="1rem" />
+              </div>
+            </CloseButton>
           </PreviewContainer>
         </CSSTransition>
       )}
@@ -164,6 +192,33 @@ const ExtractPage = () => {
   );
 };
 
+const CloseButton = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: none;
+  padding: 1rem;
+  cursor: pointer;
+  transition: opacity ${EXTRACT_ANIMATION_TIMEOUT}ms ease;
+  & > div {
+    border-radius: 50%;
+    height: 1.5rem;
+    width: 1.5rem;
+    background-color: var(--neutrals-50);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    svg {
+      fill: var(--weak);
+    }
+    @media screen and (hover: hover) {
+      &:hover {
+        background-color: var(--neutrals-100);
+      }
+    }
+  }
+`;
+
 const Loading = styled.p`
   padding: 0.5rem 1rem;
   background-color: var(--neutrals-0);
@@ -203,21 +258,39 @@ const PreviewContainer = styled.div<{
     ${(props) =>
       hexToHsl(props.color).l > 75 ? "#00000015" : props.shadowColor + "75"};
 
+  & > div {
+    transition-delay: ${EXTRACT_ANIMATION_TIMEOUT}ms;
+    opacity: 1;
+  }
   &.preview-enter {
     height: 0;
     width: 0;
+    & > div {
+      opacity: 0;
+    }
   }
   &.preview-enter-active {
     width: ${(props) => props.width}px;
     height: ${(props) => props.height}px;
+    & > div {
+      opacity: 1;
+    }
   }
   &.preview-exit {
     width: ${(props) => props.width}px;
     height: ${(props) => props.height}px;
+    & > div {
+      transition: none !important;
+      opacity: 1;
+    }
   }
   &.preview-exit-active {
     height: 0;
     width: 0;
+    & > div {
+      transition: none !important;
+      opacity: 0;
+    }
   }
 `;
 

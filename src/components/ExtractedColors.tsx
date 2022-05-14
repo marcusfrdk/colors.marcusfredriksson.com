@@ -10,7 +10,6 @@ const ExtractedColors = ({ colors, numberOfColors, imageIsLoaded }: Props) => {
   const { newToast } = useMessage();
 
   const handleClick = (color: string) => {
-    console.log("Clicked");
     const success = copyToClipboard(color);
     newToast(
       success ? `'${color}' copied to clipboard` : "Failed to copy to clipboard"
@@ -50,6 +49,7 @@ const Color = styled.div`
   border-radius: 0.5rem;
   margin: 0.5rem;
   transition-property: height, width, background-color;
+  cursor: pointer;
 
   &.color-enter {
     height: 0;

@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import SelectNumberOfColors from "components/SelectNumberOfColors";
 import ExtractedColors from "components/ExtractedColors";
+import getImageDimensions from "utils/getImageDimensions";
 import { useRef, useState } from "react";
 import { prominent } from "color.js";
 import { CSSTransition } from "react-transition-group";
@@ -21,6 +22,7 @@ const ExtractPage = () => {
   const [stateHasChanged, setStateHasChanged] = useState(false);
   const [stateWidth, setStateWidth] = useState(0);
   const [stateHeight, setStateHeight] = useState(0);
+  const [stateError, setStateError] = useState(false);
 
   const browserRef = useRef<HTMLInputElement>(null);
 
@@ -28,11 +30,15 @@ const ExtractPage = () => {
     e.preventDefault();
   };
 
+  const handleOnClick = () =>
+    browserRef?.current ? browserRef.current.click() : null;
+
   const handleUpload = async (e: any) => {
     e.preventDefault();
     setStateIsLoading(true);
     setStateImageIsLoaded(false);
     setStateHasChanged(true);
+    setStateError(false);
 
     try {
       const file = e.target.files ? e.target.files[0] : e.dataTransfer.files[0];
@@ -45,37 +51,17 @@ const ExtractPage = () => {
       const img = new Image();
       img.src = url;
       img.onload = () => {
-        let width = img.width;
-        let height = img.height;
-
         const maxWidth =
           window.innerWidth -
           parseFloat(getComputedStyle(document.documentElement).fontSize) * 2;
         const maxHeight = window.innerHeight / 2;
-        const aspectRatio = Math.max(width, height) / Math.min(width, height);
+        const [width, height] = getImageDimensions(
+          img.width,
+          img.height,
+          maxWidth,
+          maxHeight
+        );
 
-        // Excuse this mess (this is only temporary)
-        if (width > height) {
-          console.log("Is landscape");
-          height = maxHeight;
-          width = height * aspectRatio;
-
-          if (width > maxWidth) {
-            width = maxWidth;
-            height = width / aspectRatio;
-          }
-        } else {
-          console.log("Is portrait");
-          height = maxHeight;
-          width = height / aspectRatio;
-
-          if (width > maxWidth) {
-            width = maxWidth;
-            height = width / aspectRatio;
-          }
-        }
-
-        // setStateIsPortrait(img.height > img.width);
         setTimeout(() => {
           setStatePreviewUrl(url);
           setStateColors(colors);
@@ -85,14 +71,21 @@ const ExtractPage = () => {
         }, timeout);
       };
     } catch (err) {
-      console.log(err);
-      console.log("Something went wrong...");
+      process.env.NODE_ENV === "development" && console.log(err);
+      setStateHasChanged(false);
+      setStateImageIsLoaded(false);
+      setStatePreviewUrl("");
+      setStateColors([]);
+      setStateError(true);
     }
     setStateIsLoading(false);
   };
 
-  const handleOnClick = () =>
-    browserRef?.current ? browserRef.current.click() : null;
+  const functionProps = {
+    onDragOver: handleOnDragOver,
+    onDrop: handleUpload,
+    onClick: handleOnClick,
+  };
 
   return (
     <Page>
@@ -107,13 +100,7 @@ const ExtractPage = () => {
           width={stateWidth}
           height={stateHeight}
         >
-          <Preview
-            src={statePreviewUrl}
-            alt=""
-            onDragOver={handleOnDragOver}
-            onDrop={handleUpload}
-            onClick={handleOnClick}
-          />
+          <Preview src={statePreviewUrl} alt="" {...functionProps} />
           <InformationContainer
             onDragOver={handleOnDragOver}
             onDrop={handleUpload}
@@ -129,15 +116,17 @@ const ExtractPage = () => {
         </PreviewContainer>
       </CSSTransition>
       {Boolean(!statePreviewUrl) && !stateHasChanged && (
-        <PreUploadInformation>
-          <button
-            onDragOver={handleOnDragOver}
-            onDrop={handleUpload}
-            onClick={handleOnClick}
-          >
-            Select image
-          </button>
+        <PreUploadInformation
+          onDragOver={handleOnDragOver}
+          onDrop={handleUpload}
+        >
+          <button {...functionProps}>Select image</button>
           <p>...or drag and drop a file</p>
+          {stateError && (
+            <p className="error">
+              Something went wrong loading the image, please try again
+            </p>
+          )}
         </PreUploadInformation>
       )}
       <ExtractedColors
@@ -184,6 +173,8 @@ const Preview = styled.img`
   width: 100%;
   border-radius: 1rem;
   position: relative;
+  border: none;
+  outline: none;
 `;
 
 const PreviewContainer = styled.div<{
@@ -191,11 +182,8 @@ const PreviewContainer = styled.div<{
   width: number;
   height: number;
 }>`
-  --preview-container-box-shadow: 0 0 2.5rem 0.5rem
-    ${(props) => props.shadowColor + "50"};
-
   transition: ${timeout}ms ease-in-out;
-  transition-property: width, height, box-shadow;
+  transition-property: width, height;
   position: relative;
   z-index: 2;
   border-radius: 1rem;
@@ -204,7 +192,7 @@ const PreviewContainer = styled.div<{
   max-width: calc(100vw - 2rem); */
   height: ${(props) => props.height}px;
   width: ${(props) => props.width}px;
-  box-shadow: var(--preview-container-box-shadow);
+  box-shadow: 0 0 2.5rem 0.5rem ${(props) => props.shadowColor + "50"};
 
   & > div {
     opacity: 1;
@@ -213,7 +201,6 @@ const PreviewContainer = styled.div<{
   &.preview-enter {
     height: 0;
     width: 0;
-    box-shadow: 0;
     & > div {
       opacity: 0;
     }
@@ -221,7 +208,6 @@ const PreviewContainer = styled.div<{
   &.preview-enter-active {
     width: ${(props) => props.width}px;
     height: ${(props) => props.height}px;
-    box-shadow: var(--preview-container-box-shadow);
     & > div {
       opacity: 1;
     }
@@ -229,7 +215,6 @@ const PreviewContainer = styled.div<{
   &.preview-exit {
     width: ${(props) => props.width}px;
     height: ${(props) => props.height}px;
-    box-shadow: var(--preview-container-box-shadow);
     & > div {
       opacity: 1;
     }
@@ -237,7 +222,6 @@ const PreviewContainer = styled.div<{
   &.preview-exit-active {
     height: 0;
     width: 0;
-    box-shadow: 0;
     & > div {
       opacity: 0;
     }
@@ -266,7 +250,7 @@ const PreUploadInformation = styled.div`
   align-items: center;
   position: relative;
   z-index: 2;
-  pointer-events: none;
+  pointer-events: all;
   & > button {
     pointer-events: all;
     height: 3rem;
@@ -290,6 +274,10 @@ const PreUploadInformation = styled.div`
 
   & > p {
     color: #999999;
+  }
+  & > p.error {
+    color: #f31103;
+    margin-top: 1rem;
   }
 `;
 
@@ -340,6 +328,7 @@ const Page = styled.main`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  overflow-x: hidden;
 `;
 
 export default ExtractPage;

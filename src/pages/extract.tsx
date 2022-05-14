@@ -5,15 +5,15 @@ import getImageDimensions from "utils/getImageDimensions";
 import { useRef, useState } from "react";
 import { prominent } from "color.js";
 import { CSSTransition } from "react-transition-group";
-import { FaInfo as Info } from "react-icons/fa";
+
 import {
   BREAKPOINT_MOBILE,
+  EXTRACT_ANIMATION_TIMEOUT,
   MAX_NUMBER_OF_EXTRACT_COLORS,
 } from "utils/constants";
 import hexToHsl from "utils/hexToHsl";
 import SEO from "components/SEO";
-
-const timeout = 512;
+import ExtractInformation from "components/ExtractInformation";
 
 const ExtractPage = () => {
   const [statePreviewUrl, setStatePreviewUrl] = useState<string>("");
@@ -73,7 +73,7 @@ const ExtractPage = () => {
           setStateWidth(width);
           setStateHeight(height);
           setStateImageIsLoaded(true);
-        }, timeout);
+        }, EXTRACT_ANIMATION_TIMEOUT);
       };
     } catch (err) {
       process.env.NODE_ENV === "development" && console.log(err);
@@ -101,7 +101,7 @@ const ExtractPage = () => {
       {!stateError && (
         <CSSTransition
           in={stateImageIsLoaded}
-          timeout={timeout}
+          timeout={EXTRACT_ANIMATION_TIMEOUT}
           classNames="preview"
           unmountOnExit
         >
@@ -112,19 +112,6 @@ const ExtractPage = () => {
             height={stateHeight}
           >
             <Preview src={statePreviewUrl} alt="" {...functionProps} />
-            <InformationContainer
-              onDragOver={handleOnDragOver}
-              onDrop={handleUpload}
-              className="information"
-            >
-              <InformationButton>
-                <Info size="0.75rem" />
-              </InformationButton>
-              <InformationText>
-                You can select another image by dropping it anywhere on the page
-                or by clicking on the image.
-              </InformationText>
-            </InformationContainer>
           </PreviewContainer>
         </CSSTransition>
       )}
@@ -161,11 +148,18 @@ const ExtractPage = () => {
       />
       {stateIsLoading && <Loading>Image is loading...</Loading>}
       {Boolean(!statePreviewUrl) && !stateHasChanged && (
-        <SelectNumberOfColors
-          numberOfColors={stateNumberOfColors}
-          setNumberOfColors={setStateNumberOfColors}
-        />
+        <>
+          <SelectNumberOfColors
+            numberOfColors={stateNumberOfColors}
+            setNumberOfColors={setStateNumberOfColors}
+          />
+        </>
       )}
+      <ExtractInformation
+        handleOnDragOver={handleOnDragOver}
+        handleUpload={handleUpload}
+        imageIsLoaded={stateImageIsLoaded}
+      />
     </Page>
   );
 };
@@ -198,7 +192,7 @@ const PreviewContainer = styled.div<{
   width: number;
   height: number;
 }>`
-  transition: ${timeout}ms ease-in-out;
+  transition: ${EXTRACT_ANIMATION_TIMEOUT}ms ease-in-out;
   transition-property: width, height;
   position: relative;
   z-index: 2;
@@ -209,40 +203,21 @@ const PreviewContainer = styled.div<{
     ${(props) =>
       hexToHsl(props.color).l > 75 ? "#00000015" : props.shadowColor + "75"};
 
-  & > div {
-    transition-delay: ${timeout}ms;
-    opacity: 1;
-  }
-
   &.preview-enter {
     height: 0;
     width: 0;
-    & > div {
-      opacity: 0;
-    }
   }
   &.preview-enter-active {
     width: ${(props) => props.width}px;
     height: ${(props) => props.height}px;
-    & > div {
-      opacity: 1;
-    }
   }
   &.preview-exit {
     width: ${(props) => props.width}px;
     height: ${(props) => props.height}px;
-    & > div {
-      transition: none !important;
-      opacity: 1;
-    }
   }
   &.preview-exit-active {
     height: 0;
     width: 0;
-    & > div {
-      transition: none !important;
-      opacity: 0;
-    }
   }
 `;
 
@@ -297,48 +272,6 @@ const PreUploadInformation = styled.div`
     color: var(--red-400);
     margin-top: 1rem;
     max-width: calc(100vw - 4rem);
-  }
-`;
-
-const InformationButton = styled.div`
-  height: 1.5rem;
-  width: 1.5rem;
-  border-radius: 50%;
-  background-color: var(--neutrals-50);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--weak);
-`;
-
-const InformationText = styled.p`
-  background-color: var(--neutrals-0);
-  padding: 1rem;
-  border-radius: 1rem;
-  border-top-right-radius: 0.25rem;
-  color: var(--weak);
-  position: absolute;
-  top: 3rem;
-  right: 3rem;
-  width: 24rem;
-  max-width: calc(100vw - 2rem - 6rem);
-  pointer-events: none;
-  opacity: 0;
-  box-shadow: 0 0 1rem 0.5rem #1c1c1c15;
-  transition: opacity 256ms ease;
-`;
-
-const InformationContainer = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 1rem;
-  transition: opacity ${timeout}ms ease;
-  user-select: none;
-  &:hover {
-    & > p {
-      opacity: 1;
-    }
   }
 `;
 

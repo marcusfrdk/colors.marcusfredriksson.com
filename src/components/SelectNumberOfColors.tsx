@@ -17,7 +17,7 @@ const SelectNumberOfColors = ({ numberOfColors, setNumberOfColors }: Props) => {
       <Text>
         Showing {numberOfColors} color{numberOfColors === 1 ? "" : "s"}
       </Text>
-      <Chevron size="0.5rem" />
+      <Chevron size="0.5rem" color="var(--weak)" />
       <Select value={numberOfColors} onChange={handleChange}>
         {[...Array(MAX_NUMBER_OF_EXTRACT_COLORS).keys()].map((index) => {
           return (
@@ -35,6 +35,7 @@ const Text = styled.p`
   pointer-events: none;
   font-size: 0.875rem;
   margin-right: 0.5rem;
+  color: var(--weak);
 `;
 
 const Select = styled.select`
@@ -50,7 +51,7 @@ const Select = styled.select`
 
 const Container = styled.div`
   position: absolute;
-  z-index: 3;
+  z-index: 5;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   color: var(--weak);

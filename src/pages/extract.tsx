@@ -29,6 +29,12 @@ const ExtractPage = () => {
 
   const browserRef = useRef<HTMLInputElement>(null);
 
+  const resetInput = useCallback(() => {
+    if (browserRef?.current) {
+      browserRef.current.value = "";
+    }
+  }, []);
+
   const handleOnDragOver = useCallback((e: any) => {
     e.preventDefault();
   }, []);
@@ -44,15 +50,13 @@ const ExtractPage = () => {
     setStateImageIsLoaded(false);
     setStateIsLoading(false);
 
-    if (browserRef?.current) {
-      browserRef.current.value = "";
-    }
+    resetInput();
 
     setTimeout(() => {
       setStatePreviewUrl("");
       setStateColors([]);
     }, EXTRACT_ANIMATION_TIMEOUT);
-  }, []);
+  }, [resetInput]);
 
   const handleUpload = useCallback(
     async (e: any) => {
@@ -65,6 +69,8 @@ const ExtractPage = () => {
           : e.dataTransfer.files[0];
 
         if (!file) return;
+
+        resetInput();
 
         setStateImageIsLoaded(false);
         setStateHasChanged(true);
@@ -104,7 +110,7 @@ const ExtractPage = () => {
       }
       setStateIsLoading(false);
     },
-    [handleClose]
+    [handleClose, resetInput]
   );
 
   const functionProps = useMemo(() => {

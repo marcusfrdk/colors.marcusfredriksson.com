@@ -6,11 +6,12 @@ const SEO = ({ title, description }: Props) => {
   const [stateThemeColor, setStateThemeColor] = useState("#ffffff");
 
   useEffect(() => {
-    const handleChange = (e: any) =>
+    const handleChange = (e: any) => {
       setStateThemeColor(e.matches ? "#1c1c1c" : "#ffffff");
+    };
     const listener = window.matchMedia("(prefers-color-scheme: dark)");
     listener.addEventListener("change", handleChange);
-    handleChange(listener.matches);
+    handleChange(listener);
     return () => listener.removeEventListener("change", handleChange);
   }, []);
 

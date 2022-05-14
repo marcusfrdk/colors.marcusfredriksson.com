@@ -11,6 +11,7 @@ import {
   MAX_NUMBER_OF_EXTRACT_COLORS,
 } from "utils/constants";
 import hexToHsl from "utils/hexToHsl";
+import SEO from "components/SEO";
 
 const timeout = 512;
 
@@ -90,6 +91,10 @@ const ExtractPage = () => {
 
   return (
     <Page>
+      <SEO
+        title="Extract | Talmio Colors"
+        description="Extract the prominent colors from an image."
+      />
       {!stateError && (
         <CSSTransition
           in={stateImageIsLoaded}

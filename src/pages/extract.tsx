@@ -1,15 +1,14 @@
-import { useRef, useState } from "react";
 import styled from "@emotion/styled";
+import SelectNumberOfColors from "components/SelectNumberOfColors";
+import ExtractedColors from "components/ExtractedColors";
+import { useRef, useState } from "react";
 import { prominent } from "color.js";
 import { CSSTransition } from "react-transition-group";
+import { FaInfo as Info } from "react-icons/fa";
 import {
   BREAKPOINT_MOBILE,
   MAX_NUMBER_OF_EXTRACT_COLORS,
 } from "utils/constants";
-import { css } from "@emotion/react";
-
-import { FaInfo as Info } from "react-icons/fa";
-import SelectNumberOfColors from "components/SelectNumberOfColors";
 
 const timeout = 512;
 
@@ -20,6 +19,8 @@ const ExtractPage = () => {
   const [stateNumberOfColors, setStateNumberOfColors] = useState(5);
   const [stateIsLoading, setStateIsLoading] = useState(false);
   const [stateHasChanged, setStateHasChanged] = useState(false);
+  const [stateWidth, setStateWidth] = useState(0);
+  const [stateHeight, setStateHeight] = useState(0);
 
   const browserRef = useRef<HTMLInputElement>(null);
 
@@ -30,8 +31,8 @@ const ExtractPage = () => {
   const handleUpload = async (e: any) => {
     e.preventDefault();
     setStateIsLoading(true);
-    setStateHasChanged(true);
     setStateImageIsLoaded(false);
+    setStateHasChanged(true);
 
     try {
       const file = e.target.files ? e.target.files[0] : e.dataTransfer.files[0];
@@ -40,12 +41,51 @@ const ExtractPage = () => {
         format: "hex",
         amount: MAX_NUMBER_OF_EXTRACT_COLORS,
       })) as string[];
-      setTimeout(() => {
-        setStatePreviewUrl(url);
-        setStateColors(colors);
-        setStateImageIsLoaded(true);
-      }, timeout);
+
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        const maxWidth =
+          window.innerWidth -
+          parseFloat(getComputedStyle(document.documentElement).fontSize) * 2;
+        const maxHeight = window.innerHeight / 2;
+        const aspectRatio = Math.max(width, height) / Math.min(width, height);
+
+        // Excuse this mess (this is only temporary)
+        if (width > height) {
+          console.log("Is landscape");
+          height = maxHeight;
+          width = height * aspectRatio;
+
+          if (width > maxWidth) {
+            width = maxWidth;
+            height = width / aspectRatio;
+          }
+        } else {
+          console.log("Is portrait");
+          height = maxHeight;
+          width = height / aspectRatio;
+
+          if (width > maxWidth) {
+            width = maxWidth;
+            height = width / aspectRatio;
+          }
+        }
+
+        // setStateIsPortrait(img.height > img.width);
+        setTimeout(() => {
+          setStatePreviewUrl(url);
+          setStateColors(colors);
+          setStateWidth(width);
+          setStateHeight(height);
+          setStateImageIsLoaded(true);
+        }, timeout);
+      };
     } catch (err) {
+      console.log(err);
       console.log("Something went wrong...");
     }
     setStateIsLoading(false);
@@ -62,16 +102,17 @@ const ExtractPage = () => {
         classNames="preview"
         unmountOnExit
       >
-        <PreviewContainer shadowColor={stateColors[0]}>
+        <PreviewContainer
+          shadowColor={stateColors[0]}
+          width={stateWidth}
+          height={stateHeight}
+        >
           <Preview
             src={statePreviewUrl}
             alt=""
             onDragOver={handleOnDragOver}
             onDrop={handleUpload}
             onClick={handleOnClick}
-            // css={css`
-            //   box-shadow: 0 0 2rem 1rem ${stateColors[0] + "50"};
-            // `}
           />
           <InformationContainer
             onDragOver={handleOnDragOver}
@@ -99,18 +140,11 @@ const ExtractPage = () => {
           <p>...or drag and drop a file</p>
         </PreUploadInformation>
       )}
-      <Colors>
-        {stateColors.map((color, index) =>
-          index <= stateNumberOfColors - 1 ? (
-            <div
-              key={index}
-              css={css`
-                background-color: ${color};
-              `}
-            />
-          ) : null
-        )}
-      </Colors>
+      <ExtractedColors
+        colors={stateColors}
+        numberOfColors={stateNumberOfColors}
+        imageIsLoaded={stateImageIsLoaded}
+      />
       <FileBrowser
         type="file"
         ref={browserRef}
@@ -132,8 +166,6 @@ const ExtractPage = () => {
   );
 };
 
-// label={`Showing ${index + 1} color${index === 0 ? "" : "s"}`}
-
 const Loading = styled.p`
   padding: 0.5rem 1rem;
   background-color: #fff;
@@ -151,26 +183,27 @@ const Preview = styled.img`
   height: 100%;
   width: 100%;
   border-radius: 1rem;
+  position: relative;
 `;
 
-type PreviewContainerProps = {
+const PreviewContainer = styled.div<{
   shadowColor: string;
-};
-
-const PreviewContainer = styled.div`
+  width: number;
+  height: number;
+}>`
   --preview-container-box-shadow: 0 0 2.5rem 0.5rem
-    ${(props: PreviewContainerProps) => props.shadowColor + "50"};
+    ${(props) => props.shadowColor + "50"};
+
   transition: ${timeout}ms ease-in-out;
-  transition-property: width, height, max-height, max-width, box-shadow;
+  transition-property: width, height, box-shadow;
   position: relative;
   z-index: 2;
   border-radius: 1rem;
 
-  max-height: 50vh;
-  max-width: calc(100vw - 2rem);
-  /* height: 100%;
-  width: 100%; */
-  object-fit: contain;
+  /* max-height: 50vh;
+  max-width: calc(100vw - 2rem); */
+  height: ${(props) => props.height}px;
+  width: ${(props) => props.width}px;
   box-shadow: var(--preview-container-box-shadow);
 
   & > div {
@@ -178,32 +211,32 @@ const PreviewContainer = styled.div`
   }
 
   &.preview-enter {
-    max-height: 0;
-    max-width: 0;
+    height: 0;
+    width: 0;
     box-shadow: 0;
     & > div {
       opacity: 0;
     }
   }
   &.preview-enter-active {
-    max-height: 50vh;
-    max-width: calc(100vw - 2rem);
+    width: ${(props) => props.width}px;
+    height: ${(props) => props.height}px;
     box-shadow: var(--preview-container-box-shadow);
     & > div {
       opacity: 1;
     }
   }
   &.preview-exit {
-    max-height: 50vh;
-    max-width: calc(100vw - 2rem);
+    width: ${(props) => props.width}px;
+    height: ${(props) => props.height}px;
     box-shadow: var(--preview-container-box-shadow);
     & > div {
       opacity: 1;
     }
   }
   &.preview-exit-active {
-    max-height: 0;
-    max-width: 0;
+    height: 0;
+    width: 0;
     box-shadow: 0;
     & > div {
       opacity: 0;
@@ -257,30 +290,6 @@ const PreUploadInformation = styled.div`
 
   & > p {
     color: #999999;
-  }
-`;
-
-const Colors = styled.div`
-  display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(4rem, 1fr));
-  max-width: calc(100vw - 4rem);
-  margin-top: 4rem;
-  position: relative;
-  z-index: 2;
-  transition: 256ms ease;
-  transition-property: margin-top, grid-gap, max-width;
-  & > div {
-    width: 4rem;
-    aspect-ratio: 1/1;
-    border-radius: 0.5rem;
-    transition: ${timeout}ms ease;
-    transition-property: background-color, margin-left;
-  }
-
-  @media screen and (max-width: ${BREAKPOINT_MOBILE}) {
-    margin-top: 3rem;
-    grid-gap: 0.5rem;
   }
 `;
 

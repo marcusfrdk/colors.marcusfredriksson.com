@@ -1,17 +1,19 @@
 import styled from "@emotion/styled";
 import { Dispatch, SetStateAction } from "react";
-
-import { FaChevronDown as Chevron } from "react-icons/fa";
+import useDevice from "../hooks/useDevice";
 import { MAX_NUMBER_OF_EXTRACT_COLORS } from "utils/constants";
+import { FaChevronDown as Chevron } from "react-icons/fa";
 
 const SelectNumberOfColors = ({ numberOfColors, setNumberOfColors }: Props) => {
+  const { hasChin } = useDevice();
+
   const handleChange = (e: any) => {
     const value = parseInt(e.target.value) + 1;
     setNumberOfColors(value);
   };
 
   return (
-    <Container>
+    <Container style={{ bottom: hasChin ? "2.5rem" : "0.5rem" }}>
       <Text>
         Showing {numberOfColors} color{numberOfColors === 1 ? "" : "s"}
       </Text>
@@ -53,7 +55,6 @@ const Container = styled.div`
   color: #999999;
   display: flex;
   align-items: center;
-  bottom: 0.5rem;
   left: 0.5rem;
   transition: background-color 128ms ease;
   @media screen and (hover: hover) {

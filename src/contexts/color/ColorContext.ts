@@ -14,12 +14,19 @@ export type ToggleColorLock = (index: number) => void;
 
 export type History = Color[][];
 
+export type SavedColors = string[];
+
+export type SaveColor = (hex: string) => void;
+
+export type UnsaveColor = (hex: string) => void;
+
 export type RedoHistory = () => void;
 
 export type UndoHistory = () => void;
 
 export interface IColorContext {
   colors: Color[];
+  savedColors: SavedColors;
   history: History;
   historyIndex: number;
   undoHistory: UndoHistory;
@@ -29,6 +36,8 @@ export interface IColorContext {
   resetColors: ResetColors;
   regenerateColors: RegenerateColors;
   toggleColorLock: ToggleColorLock;
+  saveColor: SaveColor;
+  unsaveColor: UnsaveColor;
   canRedo: boolean;
   canUndo: boolean;
   canReset: boolean;
@@ -36,6 +45,7 @@ export interface IColorContext {
 
 const ColorContext = createContext<IColorContext>({
   colors: [],
+  savedColors: [],
   history: [],
   historyIndex: 0,
   redoHistory: () => undefined,
@@ -45,6 +55,8 @@ const ColorContext = createContext<IColorContext>({
   regenerateColors: () => undefined,
   toggleColorLock: () => undefined,
   resetColors: () => undefined,
+  saveColor: () => undefined,
+  unsaveColor: () => undefined,
   canRedo: false,
   canUndo: false,
   canReset: false,

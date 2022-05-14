@@ -10,6 +10,9 @@ import ColorContext, {
   ResetColors,
   ToggleColorLock,
   UndoHistory,
+  SaveColor,
+  SavedColors,
+  UnsaveColor,
 } from "./ColorContext";
 
 // Regenerate -> Cut history -> Append current state to history -> Set history index to length of history
@@ -18,6 +21,7 @@ import ColorContext, {
 
 const LOCALSTORAGE_HISTORY = "history";
 const LOCALSTORAGE_HISTORY_INDEX = "historyIndex";
+const LOCALSTORAGE_SAVED_COLORS = "savedColors";
 
 const ColorProvider = ({ children }: Props) => {
   // STATE
@@ -25,6 +29,7 @@ const ColorProvider = ({ children }: Props) => {
   const [stateHistory, setStateHistory] = useState<History>([]);
   const [stateHistoryIndex, setStateHistoryIndex] = useState<number>(0);
   const [stateLoaded, setStateLoaded] = useState(false);
+  const [stateSavedColors, setStateSavedColors] = useState<SavedColors>([]);
 
   // FUNCTIONS
 
@@ -61,6 +66,18 @@ const ColorProvider = ({ children }: Props) => {
     },
     [stateColors, updateCurrentState]
   );
+
+  const saveColor: SaveColor = (hex) => {
+    const newState = [...stateSavedColors, hex];
+    setStateSavedColors(newState);
+    localStorage.setItem(LOCALSTORAGE_SAVED_COLORS, JSON.stringify(newState));
+  };
+
+  const unsaveColor: UnsaveColor = (hex) => {
+    const newState = [...stateSavedColors].filter((f) => f !== hex);
+    setStateSavedColors(newState);
+    localStorage.setItem(LOCALSTORAGE_SAVED_COLORS, JSON.stringify(newState));
+  };
 
   const resetColors: ResetColors = useCallback(() => {
     const newColors = [{ hex: generateRandomHex(), locked: false }];
@@ -120,10 +137,14 @@ const ColorProvider = ({ children }: Props) => {
   // Load data on first load
   useEffect(() => {
     try {
+      const storedSavedColors = localStorage.getItem(LOCALSTORAGE_SAVED_COLORS);
       const storedHistory = localStorage.getItem(LOCALSTORAGE_HISTORY);
       const storedHistoryIndex = localStorage.getItem(
         LOCALSTORAGE_HISTORY_INDEX
       );
+
+      const saved = storedSavedColors ? JSON.parse(storedSavedColors) : [];
+      setStateSavedColors(saved);
 
       if (!storedHistory || !storedHistoryIndex) return resetColors();
 
@@ -159,6 +180,7 @@ const ColorProvider = ({ children }: Props) => {
         colors: stateColors,
         history: stateHistory,
         historyIndex: stateHistoryIndex,
+        savedColors: stateSavedColors,
         addColor,
         removeColor,
         resetColors,
@@ -166,6 +188,8 @@ const ColorProvider = ({ children }: Props) => {
         regenerateColors,
         undoHistory,
         redoHistory,
+        saveColor,
+        unsaveColor,
         canRedo: stateHistoryIndex < stateHistory.length - 1,
         canUndo: stateHistoryIndex > 0,
         canReset: stateColors.length > 1 || stateHistory.length > 1,

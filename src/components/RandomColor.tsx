@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { Color } from "contexts/color/ColorContext";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useMemo, useState } from "react";
 import getTextColorFromHex from "utils/getTextColorFromHex";
 import useColor from "contexts/color/useColor";
 import copyToClipboard from "utils/copyToClipboard";
@@ -12,11 +12,23 @@ import useMessage from "contexts/message/useMessage";
 
 import { BsFillTrashFill } from "react-icons/bs";
 import { IoIosCopy as Copy } from "react-icons/io";
-import { AiFillLock as Lock, AiFillUnlock as Unlock } from "react-icons/ai";
+import {
+  AiFillLock as Lock,
+  AiFillUnlock as Unlock,
+  AiFillHeart as Heart,
+  AiOutlineHeart as BrokenHeart,
+} from "react-icons/ai";
 import { useRouter } from "next/router";
 
 const RandomColor = ({ color, index }: Props) => {
-  const { removeColor, colors, toggleColorLock } = useColor();
+  const {
+    removeColor,
+    colors,
+    toggleColorLock,
+    saveColor,
+    unsaveColor,
+    savedColors,
+  } = useColor();
   const { newToast } = useMessage();
   const router = useRouter();
 
@@ -25,6 +37,11 @@ const RandomColor = ({ color, index }: Props) => {
   useLayoutEffect(() => {
     setStateTextColor(getTextColorFromHex(color.hex));
   }, [color, setStateTextColor]);
+
+  const isSaved = useMemo(
+    () => savedColors.includes(color.hex),
+    [savedColors, color]
+  );
 
   return (
     <Container>
@@ -54,13 +71,17 @@ const RandomColor = ({ color, index }: Props) => {
       </HexColor>
       <ButtonContainer>
         <Button
+          Icon={isSaved ? Heart : BrokenHeart}
+          onClick={() =>
+            isSaved ? unsaveColor(color.hex) : saveColor(color.hex)
+          }
+        />
+        <Button
           Icon={color.locked ? Lock : Unlock}
           onClick={() => toggleColorLock(index)}
-          hex={color.hex}
         />
         <Button
           Icon={BsFillTrashFill}
-          hex={color.hex}
           onClick={() => removeColor(index)}
           disabled={colors.length <= 1 || color.locked}
         />

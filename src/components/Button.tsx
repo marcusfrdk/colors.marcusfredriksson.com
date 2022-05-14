@@ -2,13 +2,14 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import useColor from "contexts/color/useColor";
 import { IconType } from "react-icons";
-import { BREAKPOINT_TABLET, PRIMARY_COLOR } from "utils/constants";
+import { BREAKPOINT_TABLET } from "utils/constants";
 
-const Button = ({ Icon, onClick, hex = PRIMARY_COLOR, disabled }: Props) => {
+const Button = ({ Icon, onClick, disabled }: Props) => {
   const { colors } = useColor();
 
   return (
     <Container
+      className="button"
       disabled={disabled}
       onClick={onClick}
       onKeyDown={(e) => (e.key === " " ? e.preventDefault() : null)}
@@ -62,7 +63,6 @@ const Container = styled.button`
 type Props = {
   Icon: IconType;
   onClick: () => void;
-  hex?: string;
   disabled?: boolean;
 };
 

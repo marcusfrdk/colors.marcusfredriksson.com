@@ -316,7 +316,7 @@ const InformationText = styled.p`
   top: 3rem;
   right: 3rem;
   width: 24rem;
-  max-width: calc(100vw - 2rem - 4rem);
+  max-width: calc(100vw - 2rem - 6rem);
   pointer-events: none;
   opacity: 0;
   box-shadow: 0 0 1rem 0.5rem #1c1c1c15;

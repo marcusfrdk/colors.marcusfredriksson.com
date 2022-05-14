@@ -1,19 +1,9 @@
+import useTheme from "contexts/theme/useTheme";
 import Head from "next/head";
-import { useEffect, useState } from "react";
 import { BASE_URL } from "utils/constants";
 
 const SEO = ({ title, description }: Props) => {
-  const [stateThemeColor, setStateThemeColor] = useState("#ffffff");
-
-  useEffect(() => {
-    const handleChange = (e: any) => {
-      setStateThemeColor(e.matches ? "#1c1c1c" : "#ffffff");
-    };
-    const listener = window.matchMedia("(prefers-color-scheme: dark)");
-    listener.addEventListener("change", handleChange);
-    handleChange(listener);
-    return () => listener.removeEventListener("change", handleChange);
-  }, []);
+  const { themeColor } = useTheme();
 
   return (
     <Head>
@@ -23,8 +13,8 @@ const SEO = ({ title, description }: Props) => {
       <meta name="apple-mobile-web-app-title" content="Talmio Colors" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta name="theme-color" content={stateThemeColor} />
-      <meta name="msapplication-TileColor" content={stateThemeColor} />
+      <meta name="theme-color" content={themeColor} />
+      <meta name="msapplication-TileColor" content={themeColor} />
       <link rel="canonical" href={BASE_URL} />
     </Head>
   );

@@ -34,7 +34,7 @@ const Title = styled.p`
 
 const Container = styled.div`
   padding: 1.5rem;
-  background-color: #fff;
+  background-color: var(--neutrals-0);
   border-radius: 1rem;
   position: fixed;
   top: 50%;
@@ -68,7 +68,7 @@ const Container = styled.div`
 const Backdrop = styled.div`
   height: 100vh;
   width: 100vw;
-  background-color: black;
+  background-color: #000000;
   position: fixed;
   z-index: 100;
   top: 0;

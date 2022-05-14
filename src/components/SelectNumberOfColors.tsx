@@ -45,6 +45,7 @@ const Select = styled.select`
   left: 0;
   opacity: 0;
   cursor: pointer;
+  background-color: var(--neutrals-0);
 `;
 
 const Container = styled.div`
@@ -52,14 +53,14 @@ const Container = styled.div`
   z-index: 3;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  color: #999999;
+  color: var(--weak);
   display: flex;
   align-items: center;
   left: 0.5rem;
   transition: background-color 128ms ease;
   @media screen and (hover: hover) {
     &:hover {
-      background-color: #eaeaea;
+      background-color: var(--neutrals-50);
     }
   }
 `;

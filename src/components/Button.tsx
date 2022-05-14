@@ -33,15 +33,15 @@ const Container = styled.button`
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: all 196ms ease;
-  background-color: #ffffff;
+  transition: all 64ms ease;
+  background-color: var(--neutrals-0);
   display: flex;
   justify-content: center;
   align-items: center;
 
   @media screen and (hover: hover) {
     &:hover {
-      background-color: #eaeaea;
+      background-color: var(--neutrals-50);
     }
     &:active {
       transform: scale(0.9);

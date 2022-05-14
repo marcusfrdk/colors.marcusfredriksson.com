@@ -42,7 +42,7 @@ const Title = styled.p`
 
   a {
     text-decoration: none;
-    color: #1c1c1c;
+    color: var(--strong);
   }
 
   @media screen and (max-width: ${BREAKPOINT_TABLET}) {
@@ -54,7 +54,7 @@ const Title = styled.p`
 const Container = styled.header`
   height: var(--header-height);
   width: 100vw;
-  background-color: #ffffff;
+  background-color: var(--neutrals-0);
   display: flex;
   align-items: center;
   justify-content: flex-end;

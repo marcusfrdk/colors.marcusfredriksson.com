@@ -30,10 +30,10 @@ const Menu = () => {
         rel="noopener noreferrer"
         css={css`
           text-decoration: none;
-          color: #1c1c1c;
+          color: var(--strong);
         `}
       >
-        <Github size="2rem" color="#1c1c1c" />
+        <Github size="2rem" color="var(--strong)" />
       </a>
     </Container>
   );
@@ -46,10 +46,10 @@ const Container = styled.ul`
 
   a {
     text-decoration: none;
-    color: #aaaaaa;
+    color: var(--weak);
 
     &.active {
-      color: #1c1c1c;
+      color: var(--strong);
     }
   }
 

@@ -70,7 +70,13 @@ const Toolbar = () => {
     <Container>
       {buttons.map(
         (
-          { Icon, onClick, disabled, hex = "#777777", buttonSize = "1.5rem" },
+          {
+            Icon,
+            onClick,
+            disabled,
+            hex = "var(--weak)",
+            buttonSize = "1.5rem",
+          },
           index
         ) => (
           <Button
@@ -104,8 +110,8 @@ const Toolbar = () => {
           <ModalButton
             text="Reset"
             textHex="#ffffff"
-            bgHex="#F31103"
-            hoverBgHex="#CA0F02"
+            bgHex="var(--red-400)"
+            hoverBgHex="var(--red-500)"
             onClick={() => {
               resetColors();
               setStateModalIsVisible(false);
@@ -129,20 +135,20 @@ const ButtonGroup = styled.div`
 
 const Button = styled.button`
   width: 100%;
-  background-color: #eaeaea;
+  background-color: var(--neutrals-50);
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: all 128ms ease;
+  transition: all 64ms ease;
   @media screen and (hover: hover) {
     &:hover:not(:disabled) {
-      background-color: #dfdfdf;
+      background-color: var(--neutrals-100);
     }
   }
   &:disabled {
     cursor: default;
     svg {
-      fill: #bfbfbf;
+      fill: var(--muted);
     }
   }
 `;

@@ -48,7 +48,7 @@ const MobileMenu = () => {
 };
 
 const KeyboardCloseButton = styled.button`
-  background-color: #f1f1f1;
+  background-color: var(--neutrals-50);
   height: 3rem;
   width: 100%;
   border: none;
@@ -56,7 +56,7 @@ const KeyboardCloseButton = styled.button`
   font-size: 1rem;
   opacity: 0;
   pointer-events: none;
-  color: #777777;
+  color: var(--weak);
   user-select: none;
 
   &:focus {
@@ -75,7 +75,7 @@ const ToggleButton = styled.button`
   background: none;
   cursor: pointer;
   transition: background-color 64ms ease;
-  color: #1c1c1c;
+  color: var(--strong);
 
   @media screen and (max-width: ${BREAKPOINT_TABLET}) {
     display: flex;
@@ -83,7 +83,7 @@ const ToggleButton = styled.button`
 
   @media screen and (hover: hover) {
     &:hover {
-      background-color: #eaeaea;
+      background-color: var(--neutrals-50);
     }
   }
 `;
@@ -92,7 +92,7 @@ const Container = styled.ul`
   height: 100vh;
   width: 24rem;
   max-width: 80vw;
-  background-color: #fff;
+  background-color: var(--neutrals-0);
   position: fixed;
   left: 0;
   top: 0;
@@ -111,7 +111,7 @@ const Container = styled.ul`
       border-radius: 0.5rem;
       display: flex;
       align-items: center;
-      color: #1c1c1c;
+      color: var(--strong);
       transition: background-color 64ms ease;
       margin-bottom: 1rem;
 
@@ -121,7 +121,7 @@ const Container = styled.ul`
 
       @media screen and (hover: hover) {
         &:hover {
-          background-color: #f1f1f1;
+          background-color: var(--neutrals-50);
         }
       }
     }

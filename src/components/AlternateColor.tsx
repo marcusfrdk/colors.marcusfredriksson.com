@@ -18,7 +18,6 @@ const AlternateColor = ({ title, hex, array }: Props) => {
             key={index}
             css={css`
               background-color: ${color};
-              color: ${getTextColorFromHex(color)};
             `}
             onClick={() => {
               const success = copyToClipboard(color);
@@ -29,11 +28,18 @@ const AlternateColor = ({ title, hex, array }: Props) => {
               );
             }}
           >
-            <p>{color}</p>
+            <p
+              css={css`
+                color: ${getTextColorFromHex(color)};
+              `}
+            >
+              {color}
+            </p>
             {color === hex ? (
               <Label
                 css={css`
                   background-color: ${getHoverColorFromHex(color)};
+                  color: ${getTextColorFromHex(color)};
                 `}
               >
                 Selected

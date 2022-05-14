@@ -161,10 +161,10 @@ const ExtractPage = () => {
 
 const Loading = styled.p`
   padding: 0.5rem 1rem;
-  background-color: #fff;
-  border: 1px solid #bfbfbf;
+  background-color: var(--neutrals-0);
+  border: 1px solid var(--neutrals-200);
   border-radius: 999px;
-  color: #999999;
+  color: var(--weak);
   position: fixed;
   top: calc(var(--header-height) + 2rem);
   @media screen and (max-width: ${BREAKPOINT_MOBILE}) {
@@ -262,7 +262,7 @@ const PreUploadInformation = styled.div`
     padding: 0 2rem;
     border: none;
     border-radius: 0.5rem;
-    background-color: #1c1c1c;
+    background-color: var(--primary-400);
     color: #ffffff;
     font-size: 0.875rem;
     font-weight: var(--font-medium);
@@ -271,16 +271,16 @@ const PreUploadInformation = styled.div`
     transition: background-color 64ms ease;
     @media screen and (hover: hover) {
       &:hover {
-        background-color: #2c2c2c;
+        background-color: var(--primary-500);
       }
     }
   }
 
   & > p {
-    color: #999999;
+    color: var(--weak);
   }
   & > p.error {
-    color: #f31103;
+    color: var(--red-400);
     margin-top: 1rem;
   }
 `;
@@ -289,18 +289,18 @@ const InformationButton = styled.div`
   height: 1.5rem;
   width: 1.5rem;
   border-radius: 50%;
-  background-color: #eaeaea;
+  background-color: var(--neutrals-50);
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #999999;
+  color: var(--weak);
 `;
 
 const InformationText = styled.p`
-  background-color: #ffffff;
+  background-color: var(--neutrals-0);
   padding: 1rem;
   border-radius: 0.5rem;
-  color: #999999;
+  color: var(--weak);
   position: absolute;
   top: 3rem;
   right: 3rem;

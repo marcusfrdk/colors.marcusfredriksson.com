@@ -4,9 +4,9 @@ import { css } from "@emotion/react";
 const ModalButton = ({
   text,
   onClick,
-  textHex = "#999999",
-  bgHex = "#eaeaea",
-  hoverBgHex = "#dfdfdf",
+  textHex = "var(--weak)",
+  bgHex = "var(--neutrals-50)",
+  hoverBgHex = "var(--neutrals-100)",
 }: Props) => {
   return (
     <Container

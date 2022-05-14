@@ -6,7 +6,7 @@ const ModalText = ({ children }: Props) => {
 
 const Container = styled.p`
   font-size: 1.125rem;
-  color: #777777;
+  color: var(--weak);
   line-height: 1.75rem;
 `;
 

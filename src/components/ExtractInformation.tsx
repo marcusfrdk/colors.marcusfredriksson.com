@@ -58,6 +58,9 @@ const InformationText = styled.p`
   opacity: 0;
   box-shadow: 0 0 1rem 0.5rem #1c1c1c10;
   transition: opacity 256ms ease;
+  @media screen and (prefers-color-scheme: dark) {
+    border: 1px solid var(--neutrals-100);
+  }
 `;
 
 const InformationContainer = styled.div`
@@ -70,6 +73,7 @@ const InformationContainer = styled.div`
   z-index: 3;
   transition-delay: ${EXTRACT_ANIMATION_TIMEOUT}ms;
   opacity: 1;
+
   &:hover {
     & > p {
       opacity: 1;

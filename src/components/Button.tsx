@@ -22,7 +22,7 @@ const Button = ({ Icon, onClick, hex = PRIMARY_COLOR, disabled }: Props) => {
         `
       }
     >
-      <Icon size="50%" color={hex} />
+      <Icon size="50%" color="var(--strong)" />
     </Container>
   );
 };
@@ -33,7 +33,7 @@ const Container = styled.button`
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: all 64ms ease;
+  transition: all 256ms ease;
   background-color: var(--neutrals-0);
   display: flex;
   justify-content: center;

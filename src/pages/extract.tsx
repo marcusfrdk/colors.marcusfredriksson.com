@@ -29,12 +29,6 @@ const ExtractPage = () => {
 
   const browserRef = useRef<HTMLInputElement>(null);
 
-  const resetInput = useCallback(() => {
-    if (browserRef?.current) {
-      browserRef.current.value = "";
-    }
-  }, []);
-
   const handleOnDragOver = useCallback((e: any) => {
     e.preventDefault();
   }, []);
@@ -50,13 +44,11 @@ const ExtractPage = () => {
     setStateImageIsLoaded(false);
     setStateIsLoading(false);
 
-    resetInput();
-
     setTimeout(() => {
       setStatePreviewUrl("");
       setStateColors([]);
     }, EXTRACT_ANIMATION_TIMEOUT);
-  }, [resetInput]);
+  }, []);
 
   const handleUpload = useCallback(
     async (e: any) => {
@@ -70,21 +62,19 @@ const ExtractPage = () => {
 
         if (!file) return;
 
-        resetInput();
-
         setStateImageIsLoaded(false);
         setStateHasChanged(true);
         setStateError(false);
 
         const url = URL.createObjectURL(file);
-        const colors = (await prominent(url, {
-          format: "hex",
-          amount: MAX_NUMBER_OF_EXTRACT_COLORS,
-        })) as string[];
-
         const img = new Image();
         img.src = url;
-        img.onload = () => {
+        img.onload = async () => {
+          const colors = (await prominent(img, {
+            format: "hex",
+            amount: MAX_NUMBER_OF_EXTRACT_COLORS,
+            group: 45,
+          })) as string[];
           const maxWidth =
             window.innerWidth -
             parseFloat(getComputedStyle(document.documentElement).fontSize) * 2;
@@ -110,7 +100,7 @@ const ExtractPage = () => {
       }
       setStateIsLoading(false);
     },
-    [handleClose, resetInput]
+    [handleClose]
   );
 
   const functionProps = useMemo(() => {

@@ -37,13 +37,16 @@ const ExtractPage = () => {
 
   const handleUpload = async (e: any) => {
     e.preventDefault();
-    setStateIsLoading(true);
-    setStateImageIsLoaded(false);
-    setStateHasChanged(true);
-    setStateError(false);
 
     try {
       const file = e.target.files ? e.target.files[0] : e.dataTransfer.files[0];
+      if (!file) return;
+
+      setStateIsLoading(true);
+      setStateImageIsLoaded(false);
+      setStateHasChanged(true);
+      setStateError(false);
+
       const url = URL.createObjectURL(file);
       const colors = (await prominent(url, {
         format: "hex",
@@ -157,10 +160,12 @@ const ExtractPage = () => {
         className={statePreviewUrl ? "has-image" : ""}
       />
       {stateIsLoading && <Loading>Image is loading...</Loading>}
-      <SelectNumberOfColors
-        numberOfColors={stateNumberOfColors}
-        setNumberOfColors={setStateNumberOfColors}
-      />
+      {Boolean(!statePreviewUrl) && !stateHasChanged && (
+        <SelectNumberOfColors
+          numberOfColors={stateNumberOfColors}
+          setNumberOfColors={setStateNumberOfColors}
+        />
+      )}
     </Page>
   );
 };

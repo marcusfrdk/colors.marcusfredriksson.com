@@ -65,8 +65,8 @@ const Toast = styled.p`
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #ffffff;
-  border: 1px solid #eaeaea;
+  background-color: var(--neutrals-0);
+  border: 1px solid var(--neutrals-100);
   user-select: none;
   border-radius: 999px;
   z-index: 1000;
@@ -75,6 +75,7 @@ const Toast = styled.p`
   transition: ${toastAnimationDuration}ms ease-in-out;
   top: 2rem;
   opacity: 1;
+  color: var(--strong);
 
   &.toast-enter {
     top: 0;

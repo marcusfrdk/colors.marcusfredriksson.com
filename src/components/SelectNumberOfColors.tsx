@@ -13,7 +13,7 @@ const SelectNumberOfColors = ({ numberOfColors, setNumberOfColors }: Props) => {
   };
 
   return (
-    <Container style={{ bottom: hasChin ? "2.5rem" : "0.5rem" }}>
+    <Container style={{ bottom: hasChin ? "3rem" : "1rem" }}>
       <Text>
         Showing {numberOfColors} color{numberOfColors === 1 ? "" : "s"}
       </Text>
@@ -56,7 +56,8 @@ const Container = styled.div`
   color: var(--weak);
   display: flex;
   align-items: center;
-  left: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
   transition: background-color 128ms ease;
   @media screen and (hover: hover) {
     &:hover {

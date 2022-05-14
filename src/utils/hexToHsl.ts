@@ -3,7 +3,7 @@ import isHex from "./isHex";
 export type Hsl = { h: number; s: number; l: number };
 
 const hexToHsl = (hex: string): Hsl => {
-  if (!isHex(hex)) return { h: 0, s: 0, l: 0 };
+  if (!hex || !isHex(hex)) return { h: 0, s: 0, l: 0 };
 
   const channels = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([\d]{2})?$/i.exec(
     hex

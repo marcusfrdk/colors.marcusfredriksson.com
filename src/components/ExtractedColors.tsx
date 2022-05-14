@@ -49,6 +49,7 @@ const Color = styled.div`
   border-radius: 0.5rem;
   margin: 0.5rem;
   transition-property: height, width, background-color;
+  border: 1px solid #dfdfdf;
   cursor: pointer;
 
   &.color-enter {

@@ -10,6 +10,7 @@ import {
   BREAKPOINT_MOBILE,
   MAX_NUMBER_OF_EXTRACT_COLORS,
 } from "utils/constants";
+import hexToHsl from "utils/hexToHsl";
 
 const timeout = 512;
 
@@ -89,32 +90,35 @@ const ExtractPage = () => {
 
   return (
     <Page>
-      <CSSTransition
-        in={stateImageIsLoaded}
-        timeout={timeout}
-        classNames="preview"
-        unmountOnExit
-      >
-        <PreviewContainer
-          shadowColor={stateColors[0]}
-          width={stateWidth}
-          height={stateHeight}
+      {!stateError && (
+        <CSSTransition
+          in={stateImageIsLoaded}
+          timeout={timeout}
+          classNames="preview"
+          unmountOnExit
         >
-          <Preview src={statePreviewUrl} alt="" {...functionProps} />
-          <InformationContainer
-            onDragOver={handleOnDragOver}
-            onDrop={handleUpload}
+          <PreviewContainer
+            color={stateColors[0]}
+            shadowColor={stateColors[0]}
+            width={stateWidth}
+            height={stateHeight}
           >
-            <InformationButton>
-              <Info size="0.75rem" />
-            </InformationButton>
-            <InformationText>
-              You can select another image by dropping it anywhere on the page
-              or by clicking on the image.
-            </InformationText>
-          </InformationContainer>
-        </PreviewContainer>
-      </CSSTransition>
+            <Preview src={statePreviewUrl} alt="" {...functionProps} />
+            <InformationContainer
+              onDragOver={handleOnDragOver}
+              onDrop={handleUpload}
+            >
+              <InformationButton>
+                <Info size="0.75rem" />
+              </InformationButton>
+              <InformationText>
+                You can select another image by dropping it anywhere on the page
+                or by clicking on the image.
+              </InformationText>
+            </InformationContainer>
+          </PreviewContainer>
+        </CSSTransition>
+      )}
       {Boolean(!statePreviewUrl) && !stateHasChanged && (
         <PreUploadInformation
           onDragOver={handleOnDragOver}
@@ -179,6 +183,7 @@ const Preview = styled.img`
 
 const PreviewContainer = styled.div<{
   shadowColor: string;
+  color: string;
   width: number;
   height: number;
 }>`
@@ -187,12 +192,11 @@ const PreviewContainer = styled.div<{
   position: relative;
   z-index: 2;
   border-radius: 1rem;
-
-  /* max-height: 50vh;
-  max-width: calc(100vw - 2rem); */
   height: ${(props) => props.height}px;
   width: ${(props) => props.width}px;
-  box-shadow: 0 0 2.5rem 0.5rem ${(props) => props.shadowColor + "50"};
+  box-shadow: 0 0 3rem 0.5rem
+    ${(props) =>
+      hexToHsl(props.color).l > 75 ? "#00000015" : props.shadowColor + "75"};
 
   & > div {
     opacity: 1;

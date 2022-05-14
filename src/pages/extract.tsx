@@ -2,16 +2,24 @@ import { useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { prominent } from "color.js";
 import { CSSTransition } from "react-transition-group";
-import { BREAKPOINT_MOBILE } from "utils/constants";
+import {
+  BREAKPOINT_MOBILE,
+  MAX_NUMBER_OF_EXTRACT_COLORS,
+} from "utils/constants";
 import { css } from "@emotion/react";
+
+import { FaInfo as Info } from "react-icons/fa";
+import SelectNumberOfColors from "components/SelectNumberOfColors";
 
 const timeout = 512;
 
 const ExtractPage = () => {
   const [statePreviewUrl, setStatePreviewUrl] = useState<string>("");
+  const [stateImageIsLoaded, setStateImageIsLoaded] = useState(false);
   const [stateColors, setStateColors] = useState<string[]>([]);
   const [stateNumberOfColors, setStateNumberOfColors] = useState(5);
   const [stateIsLoading, setStateIsLoading] = useState(false);
+  const [stateHasChanged, setStateHasChanged] = useState(false);
 
   const browserRef = useRef<HTMLInputElement>(null);
 
@@ -22,15 +30,21 @@ const ExtractPage = () => {
   const handleUpload = async (e: any) => {
     e.preventDefault();
     setStateIsLoading(true);
+    setStateHasChanged(true);
+    setStateImageIsLoaded(false);
+
     try {
       const file = e.target.files ? e.target.files[0] : e.dataTransfer.files[0];
       const url = URL.createObjectURL(file);
       const colors = (await prominent(url, {
         format: "hex",
-        amount: stateNumberOfColors,
+        amount: MAX_NUMBER_OF_EXTRACT_COLORS,
       })) as string[];
-      setStatePreviewUrl(url);
-      setStateColors(colors);
+      setTimeout(() => {
+        setStatePreviewUrl(url);
+        setStateColors(colors);
+        setStateImageIsLoaded(true);
+      }, timeout);
     } catch (err) {
       console.log("Something went wrong...");
     }
@@ -43,22 +57,37 @@ const ExtractPage = () => {
   return (
     <Page>
       <CSSTransition
-        in={Boolean(statePreviewUrl)}
+        in={stateImageIsLoaded}
         timeout={timeout}
         classNames="preview"
         unmountOnExit
       >
-        <Preview
-          src={statePreviewUrl}
-          onDragOver={handleOnDragOver}
-          onDrop={handleUpload}
-          onClick={handleOnClick}
-          css={css`
-            box-shadow: 0 0 2rem 1rem ${stateColors[0] + "50"};
-          `}
-        />
+        <PreviewContainer shadowColor={stateColors[0]}>
+          <Preview
+            src={statePreviewUrl}
+            alt=""
+            onDragOver={handleOnDragOver}
+            onDrop={handleUpload}
+            onClick={handleOnClick}
+            // css={css`
+            //   box-shadow: 0 0 2rem 1rem ${stateColors[0] + "50"};
+            // `}
+          />
+          <InformationContainer
+            onDragOver={handleOnDragOver}
+            onDrop={handleUpload}
+          >
+            <InformationButton>
+              <Info size="0.75rem" />
+            </InformationButton>
+            <InformationText>
+              You can select another image by dropping it anywhere on the page
+              or by clicking on the image.
+            </InformationText>
+          </InformationContainer>
+        </PreviewContainer>
       </CSSTransition>
-      {Boolean(!statePreviewUrl) && (
+      {Boolean(!statePreviewUrl) && !stateHasChanged && (
         <PreUploadInformation>
           <button
             onDragOver={handleOnDragOver}
@@ -71,14 +100,16 @@ const ExtractPage = () => {
         </PreUploadInformation>
       )}
       <Colors>
-        {stateColors.map((color, index) => (
-          <div
-            key={index}
-            css={css`
-              background-color: ${color};
-            `}
-          />
-        ))}
+        {stateColors.map((color, index) =>
+          index <= stateNumberOfColors - 1 ? (
+            <div
+              key={index}
+              css={css`
+                background-color: ${color};
+              `}
+            />
+          ) : null
+        )}
       </Colors>
       <FileBrowser
         type="file"
@@ -92,71 +123,92 @@ const ExtractPage = () => {
         onDrop={handleUpload}
         className={statePreviewUrl ? "has-image" : ""}
       />
-      <CSSTransition
-        in={stateIsLoading}
-        timeout={256}
-        classNames="loading"
-        unmountOnExit
-      >
-        <Loading>Loading image...</Loading>
-      </CSSTransition>
+      {stateIsLoading && <Loading>Image is loading...</Loading>}
+      <SelectNumberOfColors
+        numberOfColors={stateNumberOfColors}
+        setNumberOfColors={setStateNumberOfColors}
+      />
     </Page>
   );
 };
 
+// label={`Showing ${index + 1} color${index === 0 ? "" : "s"}`}
+
 const Loading = styled.p`
-  --extract-loading: calc(var(--header-height) + 2rem);
   padding: 0.5rem 1rem;
   background-color: #fff;
   border: 1px solid #bfbfbf;
   border-radius: 999px;
   color: #999999;
   position: fixed;
-  top: 5rem;
-  transition: top 256ms ease;
+  top: calc(var(--header-height) + 2rem);
   @media screen and (max-width: ${BREAKPOINT_MOBILE}) {
-    --extract-loading: calc(var(--header-height) + 1rem);
-  }
-  .loading-enter {
-    top: 0;
-  }
-  .loading-enter-active {
-    top: 5rem;
-  }
-  .loading-exit {
-    top: 5rem;
-  }
-  .loading-exit-active {
-    top: 0;
+    top: calc(var(--header-height) + 1rem);
   }
 `;
 
 const Preview = styled.img`
-  transition: ${timeout}ms ease-in-out;
-  transition-property: height, width;
+  height: 100%;
+  width: 100%;
   border-radius: 1rem;
+`;
+
+type PreviewContainerProps = {
+  shadowColor: string;
+};
+
+const PreviewContainer = styled.div`
+  --preview-container-box-shadow: 0 0 2.5rem 0.5rem
+    ${(props: PreviewContainerProps) => props.shadowColor + "50"};
+  transition: ${timeout}ms ease-in-out;
+  transition-property: width, height, max-height, max-width, box-shadow;
   position: relative;
   z-index: 2;
-
-  &.preview-enter {
-    height: 0;
-    width: 0;
-  }
-  &.preview-enter-active {
-    height: auto;
-    width: auto;
-  }
-  &.preview-exit {
-    height: auto;
-    width: auto;
-  }
-  &.preview-exit-active {
-    height: 0;
-    width: 0;
-  }
+  border-radius: 1rem;
 
   max-height: 50vh;
   max-width: calc(100vw - 2rem);
+  /* height: 100%;
+  width: 100%; */
+  object-fit: contain;
+  box-shadow: var(--preview-container-box-shadow);
+
+  & > div {
+    opacity: 1;
+  }
+
+  &.preview-enter {
+    max-height: 0;
+    max-width: 0;
+    box-shadow: 0;
+    & > div {
+      opacity: 0;
+    }
+  }
+  &.preview-enter-active {
+    max-height: 50vh;
+    max-width: calc(100vw - 2rem);
+    box-shadow: var(--preview-container-box-shadow);
+    & > div {
+      opacity: 1;
+    }
+  }
+  &.preview-exit {
+    max-height: 50vh;
+    max-width: calc(100vw - 2rem);
+    box-shadow: var(--preview-container-box-shadow);
+    & > div {
+      opacity: 1;
+    }
+  }
+  &.preview-exit-active {
+    max-height: 0;
+    max-width: 0;
+    box-shadow: 0;
+    & > div {
+      opacity: 0;
+    }
+  }
 `;
 
 const Dropzone = styled.div`
@@ -209,28 +261,66 @@ const PreUploadInformation = styled.div`
 `;
 
 const Colors = styled.div`
-  display: flex;
-  margin-top: 4rem;
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(4rem, 1fr));
   max-width: calc(100vw - 4rem);
+  margin-top: 4rem;
   position: relative;
   z-index: 2;
-  transition: margin-top 256ms ease;
+  transition: 256ms ease;
+  transition-property: margin-top, grid-gap, max-width;
   & > div {
-    height: auto;
     width: 4rem;
     aspect-ratio: 1/1;
     border-radius: 0.5rem;
-    transition: margin-left 256ms ease;
-    &:not(:first-of-type) {
-      margin-left: 1rem;
-      @media screen and (max-width: ${BREAKPOINT_MOBILE}) {
-        margin-left: 0.5rem;
-      }
-    }
+    transition: ${timeout}ms ease;
+    transition-property: background-color, margin-left;
   }
 
   @media screen and (max-width: ${BREAKPOINT_MOBILE}) {
     margin-top: 3rem;
+    grid-gap: 0.5rem;
+  }
+`;
+
+const InformationButton = styled.div`
+  height: 1.5rem;
+  width: 1.5rem;
+  border-radius: 50%;
+  background-color: #eaeaea;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #999999;
+`;
+
+const InformationText = styled.p`
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: #999999;
+  position: absolute;
+  top: 3rem;
+  right: 3rem;
+  width: 24rem;
+  max-width: calc(100vw - 2rem - 4rem);
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 0 0 1rem 0.5rem #1c1c1c15;
+`;
+
+const InformationContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1.5rem;
+  transition: opacity ${timeout}ms ease;
+  user-select: none;
+  &:hover {
+    & > p {
+      opacity: 1;
+    }
   }
 `;
 

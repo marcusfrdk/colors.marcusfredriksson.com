@@ -7,7 +7,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 
 const csp = [
   "default-src 'self'",
-  "img-src 'self'",
+  `img-src 'self' data: blob: data:`,
   "style-src 'self' 'unsafe-inline'",
   `script-src 'self'${isDev ? " 'unsafe-eval'" : ""}`,
   `connect-src 'self' ${isDev ? "*" : ""}`,

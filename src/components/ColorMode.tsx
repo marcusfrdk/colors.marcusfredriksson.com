@@ -40,6 +40,8 @@ const Mode = styled.p`
   background-color: var(--neutrals-50);
   color: var(--weak);
   margin-right: 1rem;
+  min-width: 5rem;
+  justify-content: center;
 `;
 
 const Values = styled.p`

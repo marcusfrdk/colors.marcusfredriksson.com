@@ -23,6 +23,8 @@ import {
 } from "react-icons/ai";
 import useColor from "contexts/color/useColor";
 import { useMemo } from "react";
+import getColorLabel from "utils/getColorLabel";
+import capitalize from "utils/capitalize";
 
 const ShadesPage = ({
   hex,
@@ -41,10 +43,12 @@ const ShadesPage = ({
     [savedColors, hex]
   );
 
-  const Fn = useMemo(
+  const fn = useMemo(
     () => (savedColors.includes(hex) ? unsaveColor : saveColor),
     [savedColors, hex, saveColor, unsaveColor]
   );
+
+  const label = useMemo(() => getColorLabel(hex), [hex]);
 
   return (
     <Container>
@@ -82,7 +86,17 @@ const ShadesPage = ({
             {getTextColorFromHex(hex) === "#ffffff" ? "Light" : "Dark"} text
             recommended
           </p>
-          <SaveButton onClick={() => Fn(hex)}>
+          {label && (
+            <Label
+              style={{
+                backgroundColor: getHoverColorFromHex(hex),
+                color: getTextColorFromHex(hex),
+              }}
+            >
+              {capitalize(label)}
+            </Label>
+          )}
+          <SaveButton onClick={() => fn(hex)}>
             <Icon color={getTextColorFromHex(hex)} size="1.5rem" />
           </SaveButton>
         </MainColor>
@@ -106,6 +120,14 @@ const ShadesPage = ({
     </Container>
   );
 };
+
+const Label = styled.p`
+  width: fit-content;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+  border-radius: 0.25rem;
+`;
 
 const SaveButton = styled.button`
   width: fit-content;

@@ -17,6 +17,12 @@ import getTextColorFromHex from "utils/getTextColorFromHex";
 import getTradicColors from "utils/getTriadicColors";
 import isHex from "utils/isHex";
 import Shades from "../components/Shades";
+import {
+  AiFillHeart as Heart,
+  AiOutlineHeart as BrokenHeart,
+} from "react-icons/ai";
+import useColor from "contexts/color/useColor";
+import { useMemo } from "react";
 
 const ShadesPage = ({
   hex,
@@ -28,6 +34,17 @@ const ShadesPage = ({
   hover,
 }: Props) => {
   const { newToast } = useMessage();
+  const { savedColors, saveColor, unsaveColor } = useColor();
+
+  const Icon = useMemo(
+    () => (savedColors.includes(hex) ? Heart : BrokenHeart),
+    [savedColors, hex]
+  );
+
+  const Fn = useMemo(
+    () => (savedColors.includes(hex) ? unsaveColor : saveColor),
+    [savedColors, hex, saveColor, unsaveColor]
+  );
 
   return (
     <Container>
@@ -65,6 +82,9 @@ const ShadesPage = ({
             {getTextColorFromHex(hex) === "#ffffff" ? "Light" : "Dark"} text
             recommended
           </p>
+          <SaveButton onClick={() => Fn(hex)}>
+            <Icon color={getTextColorFromHex(hex)} size="1.5rem" />
+          </SaveButton>
         </MainColor>
 
         <ColorMode mode="hex" hex={hex} />
@@ -87,7 +107,36 @@ const ShadesPage = ({
   );
 };
 
+const SaveButton = styled.button`
+  width: fit-content;
+  border: none;
+  height: 3rem;
+  width: 3rem;
+  border-radius: 0.5rem;
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 64ms ease-in-out;
+
+  & > svg {
+    transition: 64ms ease-in-out;
+    transition-property: fill, color;
+  }
+
+  @media screen and (hover: hover) {
+    &:hover {
+      background-color: var(--neutrals-0);
+      * {
+        fill: var(--strong);
+      }
+    }
+  }
+`;
+
 const MainColor = styled.div`
+  position: relative;
   height: 12rem;
   border-radius: 1rem;
   width: 100%;

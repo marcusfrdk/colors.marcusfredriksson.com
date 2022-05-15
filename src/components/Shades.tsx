@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import generateShades from "utils/generateShades";
 import getGradientString from "utils/getGradientString";
@@ -34,41 +35,46 @@ const Shades = ({ hex, defaultValue }: Props) => {
       <Content>
         <ShadesContainer>
           {stateShades.map((shade, index) => (
-            <Shade
+            <Link
               key={index}
-              css={css`
-                background-color: ${shade};
-              `}
+              href={`/shades?color=${encodeURIComponent(shade)}`}
+              scroll={false}
             >
-              <div>
-                <p
-                  css={css`
-                    color: ${getTextColorFromHex(shade)};
-                  `}
-                >
-                  {shade}
-                </p>
-                {shade === hex && (
-                  <Label
+              <Shade
+                css={css`
+                  background-color: ${shade};
+                `}
+              >
+                <div>
+                  <p
                     css={css`
-                      background-color: ${getHoverColorFromHex(shade)};
                       color: ${getTextColorFromHex(shade)};
                     `}
                   >
-                    Selected
-                  </Label>
-                )}
-              </div>
-              {stateShades.length === baseNames.length ? (
-                <p
-                  css={css`
-                    color: ${getTextColorFromHex(shade)};
-                  `}
-                >
-                  {baseNames[index]}
-                </p>
-              ) : null}
-            </Shade>
+                    {shade}
+                  </p>
+                  {shade === hex && (
+                    <Label
+                      css={css`
+                        background-color: ${getHoverColorFromHex(shade)};
+                        color: ${getTextColorFromHex(shade)};
+                      `}
+                    >
+                      Selected
+                    </Label>
+                  )}
+                </div>
+                {stateShades.length === baseNames.length ? (
+                  <p
+                    css={css`
+                      color: ${getTextColorFromHex(shade)};
+                    `}
+                  >
+                    {baseNames[index]}
+                  </p>
+                ) : null}
+              </Shade>
+            </Link>
           ))}
         </ShadesContainer>
         <Gradient
@@ -87,6 +93,7 @@ const Shade = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
+  cursor: pointer;
   & > div {
     display: flex;
     align-items: center;

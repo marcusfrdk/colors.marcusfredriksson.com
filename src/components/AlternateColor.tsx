@@ -1,51 +1,45 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import useMessage from "contexts/message/useMessage";
+import Link from "next/link";
 import { BREAKPOINT_MOBILE, BREAKPOINT_TABLET } from "utils/constants";
-import copyToClipboard from "utils/copyToClipboard";
 import getHoverColorFromHex from "utils/getHoverColorFromHex";
 import getTextColorFromHex from "utils/getTextColorFromHex";
 
 const AlternateColor = ({ title, hex, array }: Props) => {
-  const { newToast } = useMessage();
-
   return (
     <Container>
       <Title>{title}</Title>
       <ColorContainer>
         {array.map((color, index) => (
-          <Color
+          <Link
             key={index}
-            css={css`
-              background-color: ${color};
-            `}
-            onClick={() => {
-              const success = copyToClipboard(color);
-              newToast(
-                success
-                  ? `'${color}' copied to clipboard`
-                  : "Failed to copy to clipboard"
-              );
-            }}
+            href={`/shades?color=${encodeURIComponent(color)}`}
+            scroll={false}
           >
-            <p
+            <Color
               css={css`
-                color: ${getTextColorFromHex(color)};
+                background-color: ${color};
               `}
             >
-              {color}
-            </p>
-            {color === hex ? (
-              <Label
+              <p
                 css={css`
-                  background-color: ${getHoverColorFromHex(color)};
                   color: ${getTextColorFromHex(color)};
                 `}
               >
-                Selected
-              </Label>
-            ) : null}
-          </Color>
+                {color}
+              </p>
+              {color === hex ? (
+                <Label
+                  css={css`
+                    background-color: ${getHoverColorFromHex(color)};
+                    color: ${getTextColorFromHex(color)};
+                  `}
+                >
+                  Selected
+                </Label>
+              ) : null}
+            </Color>
+          </Link>
         ))}
       </ColorContainer>
     </Container>
@@ -71,6 +65,7 @@ const Label = styled.p`
 const ColorContainer = styled.div`
   display: flex;
   user-select: none;
+  cursor: pointer;
   @media screen and (max-width: ${BREAKPOINT_MOBILE}) {
     flex-direction: column;
     & > div {

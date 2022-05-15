@@ -308,7 +308,7 @@ const PreviewContainer = styled.div<{
   height: ${(props) => props.height}px;
   width: ${(props) => props.width}px;
   max-height: 50vh;
-  max-width: calc(100vw - 2rem);
+  max-width: calc(100vw - 4rem);
 
   & > div {
     transition-delay: ${EXTRACT_ANIMATION_TIMEOUT}ms;

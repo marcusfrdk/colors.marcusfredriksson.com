@@ -1,10 +1,19 @@
-const getImageDimensions = (
-  width: number,
-  height: number,
-  maxWidth: number,
-  maxHeight: number
-): number[] => {
+/**
+ * Takes in dimension parameters and returns an array of number
+ * that represent the dimensions of the image in pixels.
+ *
+ * @param width number
+ * @param height number
+ * @returns [width, height] with values in pixels
+ */
+const getImageDimensions = (width: number, height: number): number[] => {
   const aspectRatio = Math.max(width, height) / Math.min(width, height);
+  const maxHeight = window.innerHeight / 2;
+  const maxWidth =
+    window.innerWidth -
+    parseFloat(getComputedStyle(document.documentElement).fontSize) * 2;
+
+  console.log("Max", maxWidth, maxHeight);
 
   // Excuse this mess (this is only temporary)
   if (width > height) {

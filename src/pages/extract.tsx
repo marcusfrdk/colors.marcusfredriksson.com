@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import SelectNumberOfColors from "components/SelectNumberOfColors";
 import ExtractedColors from "components/ExtractedColors";
 import getImageDimensions from "utils/getImageDimensions";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { prominent } from "color.js";
 import { CSSTransition } from "react-transition-group";
 
@@ -25,6 +25,7 @@ const ExtractPage = () => {
   const [stateHasChanged, setStateHasChanged] = useState(false);
   const [stateWidth, setStateWidth] = useState(0);
   const [stateHeight, setStateHeight] = useState(0);
+  const [stateDimensions, setStateDimensions] = useState<number[]>([0, 0]);
   const [stateError, setStateError] = useState(false);
 
   const browserRef = useRef<HTMLInputElement>(null);
@@ -50,6 +51,14 @@ const ExtractPage = () => {
     }, EXTRACT_ANIMATION_TIMEOUT);
   }, []);
 
+  const resizeDimensions = useCallback((width: number, height: number) => {
+    console.log("In", width, height);
+    const [newWidth, newHeight] = getImageDimensions(width, height);
+    console.log("Out", newWidth, newHeight);
+    setStateHeight(newHeight);
+    setStateWidth(newWidth);
+  }, []);
+
   const handleUpload = useCallback(
     async (e: any) => {
       e.preventDefault();
@@ -62,7 +71,7 @@ const ExtractPage = () => {
 
         if (!file) return;
 
-        setStateImageIsLoaded(false);
+        // setStateImageIsLoaded(false);
         setStateHasChanged(true);
         setStateError(false);
 
@@ -75,22 +84,13 @@ const ExtractPage = () => {
             amount: MAX_NUMBER_OF_EXTRACT_COLORS,
             group: 45,
           })) as string[];
-          const maxWidth =
-            window.innerWidth -
-            parseFloat(getComputedStyle(document.documentElement).fontSize) * 2;
-          const maxHeight = window.innerHeight / 2;
-          const [width, height] = getImageDimensions(
-            img.width,
-            img.height,
-            maxWidth,
-            maxHeight
-          );
+
+          resizeDimensions(img.width, img.height);
 
           setTimeout(() => {
             setStatePreviewUrl(url);
             setStateColors(colors);
-            setStateWidth(width);
-            setStateHeight(height);
+            setStateDimensions([img.width, img.height]);
             setStateImageIsLoaded(true);
           }, EXTRACT_ANIMATION_TIMEOUT);
         };
@@ -100,8 +100,17 @@ const ExtractPage = () => {
       }
       setStateIsLoading(false);
     },
-    [handleClose]
+    [handleClose, resizeDimensions, setStateDimensions]
   );
+
+  useEffect(() => {
+    const handleResize = (e: any) => {
+      const newState = [...stateDimensions];
+      resizeDimensions(newState[0], newState[1]);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [resizeDimensions, stateDimensions]);
 
   const functionProps = useMemo(() => {
     return {
@@ -250,6 +259,8 @@ const PreviewContainer = styled.div<{
   border-radius: 1rem;
   height: ${(props) => props.height}px;
   width: ${(props) => props.width}px;
+  max-height: 50vh;
+  max-width: calc(100vw - 2rem);
   box-shadow: 0 0 3rem 0.5rem
     ${(props) =>
       hexToHsl(props.color).l > 75 ? "#00000015" : props.shadowColor + "75"};

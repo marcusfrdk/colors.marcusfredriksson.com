@@ -13,8 +13,6 @@ const getImageDimensions = (width: number, height: number): number[] => {
     window.innerWidth -
     parseFloat(getComputedStyle(document.documentElement).fontSize) * 2;
 
-  console.log("Max", maxWidth, maxHeight);
-
   // Excuse this mess (this is only temporary)
   if (width > height) {
     height = maxHeight;
@@ -30,7 +28,7 @@ const getImageDimensions = (width: number, height: number): number[] => {
 
     if (width > maxWidth) {
       width = maxWidth;
-      height = width / aspectRatio;
+      height = width * aspectRatio;
     }
   }
 

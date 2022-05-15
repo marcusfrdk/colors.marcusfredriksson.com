@@ -8,6 +8,7 @@ import { CSSTransition } from "react-transition-group";
 
 import {
   BREAKPOINT_MOBILE,
+  DEFAULT_NUMBER_OF_EXTRACT_COLORS,
   EXTRACT_ANIMATION_TIMEOUT,
   MAX_NUMBER_OF_EXTRACT_COLORS,
 } from "utils/constants";
@@ -20,13 +21,15 @@ const ExtractPage = () => {
   const [statePreviewUrl, setStatePreviewUrl] = useState<string>("");
   const [stateImageIsLoaded, setStateImageIsLoaded] = useState(false);
   const [stateColors, setStateColors] = useState<string[]>([]);
-  const [stateNumberOfColors, setStateNumberOfColors] = useState(5);
   const [stateIsLoading, setStateIsLoading] = useState(false);
   const [stateHasChanged, setStateHasChanged] = useState(false);
   const [stateWidth, setStateWidth] = useState(0);
   const [stateHeight, setStateHeight] = useState(0);
   const [stateDimensions, setStateDimensions] = useState<number[]>([0, 0]);
   const [stateError, setStateError] = useState(false);
+  const [stateNumberOfColors, setStateNumberOfColors] = useState(
+    DEFAULT_NUMBER_OF_EXTRACT_COLORS
+  );
 
   const browserRef = useRef<HTMLInputElement>(null);
 
@@ -52,9 +55,7 @@ const ExtractPage = () => {
   }, []);
 
   const resizeDimensions = useCallback((width: number, height: number) => {
-    console.log("In", width, height);
     const [newWidth, newHeight] = getImageDimensions(width, height);
-    console.log("Out", newWidth, newHeight);
     setStateHeight(newHeight);
     setStateWidth(newWidth);
   }, []);
@@ -104,7 +105,7 @@ const ExtractPage = () => {
   );
 
   useEffect(() => {
-    const handleResize = (e: any) => {
+    const handleResize = () => {
       const newState = [...stateDimensions];
       resizeDimensions(newState[0], newState[1]);
     };

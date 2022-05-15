@@ -21,7 +21,7 @@ const SelectNumberOfColors = ({ numberOfColors, setNumberOfColors }: Props) => {
       <Select value={numberOfColors} onChange={handleChange}>
         {[...Array(MAX_NUMBER_OF_EXTRACT_COLORS).keys()].map((index) => {
           return (
-            <option key={index} value={index}>
+            <option key={index} value={index + 1}>
               {index + 1}
             </option>
           );

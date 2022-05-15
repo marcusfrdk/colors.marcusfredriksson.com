@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BREAKPOINT_MOBILE, BREAKPOINT_TABLET } from "utils/constants";
 import getHoverColorFromHex from "utils/getHoverColorFromHex";
 import getTextColorFromHex from "utils/getTextColorFromHex";
+import { getInfoPageUrl } from "utils/urls";
 
 const AlternateColor = ({ title, hex, array }: Props) => {
   return (
@@ -11,11 +12,7 @@ const AlternateColor = ({ title, hex, array }: Props) => {
       <Title>{title}</Title>
       <ColorContainer>
         {array.map((color, index) => (
-          <Link
-            key={index}
-            href={`/shades?color=${encodeURIComponent(color)}`}
-            scroll={false}
-          >
+          <Link key={index} href={getInfoPageUrl(color)} scroll={false}>
             <Color
               css={css`
                 background-color: ${color};

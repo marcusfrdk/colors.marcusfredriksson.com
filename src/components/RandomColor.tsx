@@ -19,6 +19,7 @@ import {
   AiOutlineHeart as BrokenHeart,
 } from "react-icons/ai";
 import { useRouter } from "next/router";
+import { getInfoPageUrl } from "utils/urls";
 
 const RandomColor = ({ color, index }: Props) => {
   const {
@@ -90,9 +91,7 @@ const RandomColor = ({ color, index }: Props) => {
         css={css`
           background-color: ${color.hex};
         `}
-        onClick={() =>
-          router.push(`/shades?color=${encodeURIComponent(color.hex)}`)
-        }
+        onClick={() => router.push(getInfoPageUrl(color.hex))}
       />
     </Container>
   );

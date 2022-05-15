@@ -6,6 +6,7 @@ import generateShades from "utils/generateShades";
 import getGradientString from "utils/getGradientString";
 import getHoverColorFromHex from "utils/getHoverColorFromHex";
 import getTextColorFromHex from "utils/getTextColorFromHex";
+import { getInfoPageUrl } from "utils/urls";
 
 const baseNames = [
   0, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900,
@@ -35,11 +36,7 @@ const Shades = ({ hex, defaultValue }: Props) => {
       <Content>
         <ShadesContainer>
           {stateShades.map((shade, index) => (
-            <Link
-              key={index}
-              href={`/shades?color=${encodeURIComponent(shade)}`}
-              scroll={false}
-            >
+            <Link key={index} href={getInfoPageUrl(shade)} scroll={false}>
               <Shade
                 css={css`
                   background-color: ${shade};

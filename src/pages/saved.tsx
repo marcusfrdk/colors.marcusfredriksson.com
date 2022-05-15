@@ -10,6 +10,7 @@ import copyToClipboard from "utils/copyToClipboard";
 import useMessage from "contexts/message/useMessage";
 import { useRouter } from "next/router";
 import SEO from "components/SEO";
+import { getInfoPageUrl } from "utils/urls";
 
 const SavedPage = () => {
   const { savedColors, unsaveColor } = useColor();
@@ -47,9 +48,7 @@ const SavedPage = () => {
             >
               <Background
                 className="background"
-                onClick={() =>
-                  router.push(`/shades?color=${encodeURIComponent(color)}`)
-                }
+                onClick={() => router.push(getInfoPageUrl(color))}
               />
               <div
                 onClick={() => {

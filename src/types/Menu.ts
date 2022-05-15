@@ -15,7 +15,7 @@ export type MenuItem = {
 
 export const menu: MenuItem[] = [
   { label: "Colors", href: "/", Icon: Colors },
-  { label: "Shades", href: "/shades", Icon: Shades },
+  { label: "Information", href: "/info", Icon: Shades },
   { label: "Extract", href: "/extract", Icon: Image },
   { label: "Saved", href: "/saved", Icon: Heart },
   {

@@ -47,6 +47,11 @@ const Mode = styled.p`
 const Values = styled.p`
   display: flex;
   align-items: center;
+  align-self: center;
+  justify-content: center;
+  height: fit-content;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
 `;
 
 const Container = styled.div`
@@ -58,7 +63,9 @@ const Container = styled.div`
   overflow: hidden;
   @media screen and (hover: hover) {
     &:hover {
-      background-color: var(--neutrals-50);
+      & > p:last-of-type {
+        background-color: var(--neutrals-50);
+      }
     }
   }
 `;

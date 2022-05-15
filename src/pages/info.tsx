@@ -26,7 +26,7 @@ import { useMemo } from "react";
 import getColorLabel from "utils/getColorLabel";
 import capitalize from "utils/capitalize";
 
-const ShadesPage = ({
+const InfoPage = ({
   hex,
   shades,
   analogous,
@@ -54,7 +54,7 @@ const ShadesPage = ({
     <Container>
       <Content>
         <SEO
-          title="Shades | Talmio Colors"
+          title="Information | Talmio Colors"
           description="Generate shades, gradients and alternate color schemes."
         />
         <MainColor
@@ -90,7 +90,7 @@ const ShadesPage = ({
             <Label
               style={{
                 backgroundColor: getHoverColorFromHex(hex),
-                color: getTextColorFromHex(hex),
+                color: getHoverColorFromHex(getTextColorFromHex(hex)),
               }}
             >
               {capitalize(label)}
@@ -204,8 +204,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { query } = ctx;
 
   const hex =
-    query.color && !Array.isArray(query.color) && isHex(query.color)
-      ? decodeURIComponent(query.color)
+    query.hex && !Array.isArray(query.hex) && isHex(query.hex)
+      ? decodeURIComponent(query.hex)
       : generateRandomHex();
 
   const shades = generateShades(hex);
@@ -238,4 +238,4 @@ type Props = {
   hover: string;
 };
 
-export default ShadesPage;
+export default InfoPage;

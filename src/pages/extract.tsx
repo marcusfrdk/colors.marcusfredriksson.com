@@ -23,6 +23,7 @@ const ExtractPage = () => {
   const [stateColors, setStateColors] = useState<string[]>([]);
   const [stateIsLoading, setStateIsLoading] = useState(false);
   const [stateHasChanged, setStateHasChanged] = useState(false);
+  const [stateIsChanging, setStateIsChanging] = useState(false);
   const [stateWidth, setStateWidth] = useState(0);
   const [stateHeight, setStateHeight] = useState(0);
   const [stateDimensions, setStateDimensions] = useState<number[]>([0, 0]);
@@ -43,6 +44,7 @@ const ExtractPage = () => {
   );
 
   const handleClose = useCallback(() => {
+    setStateIsChanging(true);
     setStateHasChanged(false);
     setStateError(false);
     setStateImageIsLoaded(false);
@@ -51,6 +53,7 @@ const ExtractPage = () => {
     setTimeout(() => {
       setStatePreviewUrl("");
       setStateColors([]);
+      setStateIsChanging(false);
     }, EXTRACT_ANIMATION_TIMEOUT);
   }, []);
 
@@ -71,6 +74,10 @@ const ExtractPage = () => {
           : e.dataTransfer.files[0];
 
         if (!file) return;
+
+        if (statePreviewUrl) {
+          setStateIsChanging(true);
+        }
 
         // setStateImageIsLoaded(false);
         setStateHasChanged(true);
@@ -93,6 +100,7 @@ const ExtractPage = () => {
             setStateColors(colors);
             setStateDimensions([img.width, img.height]);
             setStateImageIsLoaded(true);
+            setStateIsChanging(false);
           }, EXTRACT_ANIMATION_TIMEOUT);
         };
       } catch (err) {
@@ -101,7 +109,13 @@ const ExtractPage = () => {
       }
       setStateIsLoading(false);
     },
-    [handleClose, resizeDimensions, setStateDimensions]
+    [
+      handleClose,
+      resizeDimensions,
+      setStateDimensions,
+      statePreviewUrl,
+      setStateIsChanging,
+    ]
   );
 
   useEffect(() => {
@@ -134,13 +148,15 @@ const ExtractPage = () => {
           classNames="preview"
           unmountOnExit
         >
-          <PreviewContainer
-            color={stateColors[0]}
-            shadowColor={stateColors[0]}
-            width={stateWidth}
-            height={stateHeight}
-          >
-            <Preview src={statePreviewUrl} alt="" {...functionProps} />
+          <PreviewContainer width={stateWidth} height={stateHeight}>
+            <Preview
+              src={statePreviewUrl}
+              alt=""
+              color={stateColors[0]}
+              shadowColor={stateColors[0]}
+              {...functionProps}
+              className={stateIsChanging ? "is-changing" : ""}
+            />
             <CloseButton {...functionProps} onClick={handleClose}>
               <div>
                 <Close size="1rem" />
@@ -238,18 +254,48 @@ const Loading = styled.p`
   }
 `;
 
-const Preview = styled.img`
+const Preview = styled.img<{
+  shadowColor: string;
+  color: string;
+}>`
   height: 100%;
   width: 100%;
   border-radius: 1rem;
   position: relative;
   border: none;
   outline: none;
+  display: inline-block;
+  box-shadow: 0 0 3rem 0.5rem
+    ${(props) =>
+      hexToHsl(props.color).l > 75 ? "#00000015" : props.shadowColor + "75"};
+  transition: ${EXTRACT_ANIMATION_TIMEOUT}ms ease;
+  transition-property: filter, box-shadow;
+  overflow: hidden;
+
+  filter: blur(0);
+  -webkit-filter: blur(0);
+  -moz-filter: blur(0);
+  -o-filter: blur(0);
+  -ms-filter: blur(0);
+
+  &.is-changing {
+    filter: blur(0.5rem);
+    -webkit-filter: blur(0.5rem);
+    -moz-filter: blur(0.5rem);
+    -o-filter: blur(0.5rem);
+    -ms-filter: blur(0.5rem);
+
+    @media screen and (max-width: ${BREAKPOINT_MOBILE}) {
+      filter: blur(0.25rem);
+      -webkit-filter: blur(0.25rem);
+      -moz-filter: blur(0.25rem);
+      -o-filter: blur(0.25rem);
+      -ms-filter: blur(0.25rem);
+    }
+  }
 `;
 
 const PreviewContainer = styled.div<{
-  shadowColor: string;
-  color: string;
   width: number;
   height: number;
 }>`
@@ -262,9 +308,6 @@ const PreviewContainer = styled.div<{
   width: ${(props) => props.width}px;
   max-height: 50vh;
   max-width: calc(100vw - 2rem);
-  box-shadow: 0 0 3rem 0.5rem
-    ${(props) =>
-      hexToHsl(props.color).l > 75 ? "#00000015" : props.shadowColor + "75"};
 
   & > div {
     transition-delay: ${EXTRACT_ANIMATION_TIMEOUT}ms;

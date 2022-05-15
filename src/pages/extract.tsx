@@ -90,7 +90,8 @@ const ExtractPage = () => {
           const colors = (await prominent(img, {
             format: "hex",
             amount: MAX_NUMBER_OF_EXTRACT_COLORS,
-            group: 45,
+            group: 30,
+            sample: 75,
           })) as string[];
 
           resizeDimensions(img.width, img.height);

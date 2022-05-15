@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import AlternateColor from "components/AlternateColor";
+import ColorMode from "components/ColorMode";
 import SEO from "components/SEO";
 import useMessage from "contexts/message/useMessage";
 import { GetServerSideProps } from "next";
@@ -65,6 +66,11 @@ const ShadesPage = ({
             recommended
           </p>
         </MainColor>
+
+        <ColorMode mode="hex" hex={hex} />
+        <ColorMode mode="rgb" hex={hex} />
+        <ColorMode mode="hsl" hex={hex} />
+        <ColorMode mode="cmyk" hex={hex} margin="0 0 2rem 0" />
 
         <Shades hex={hex} defaultValue={shades} />
 

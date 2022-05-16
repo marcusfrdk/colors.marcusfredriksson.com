@@ -13,7 +13,7 @@ const SEO = ({ title, description }: Props) => {
       <meta name="apple-mobile-web-app-title" content="Talmio Colors" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:image" content="/og-image.png" />
+      <meta property="og:image" content="/og-image.jpg" />
       <meta property="og:image:height" content="630px" />
       <meta property="og:image:width" content="1200px" />
       <meta property="og:type" content="website" />

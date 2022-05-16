@@ -1,4 +1,4 @@
-![Extractor](./docs/main.png)
+![Extractor](./assets/main.png)
 
 # Talmio Colors
 
@@ -18,13 +18,13 @@ Dealing with colors can be a challenge without the right tools. `Talmio Colors` 
 
 Generate random colors and save them for later. Use the spacebar for quickly regenerate the colors, and the arrow keys to undo and redo the regeneration.
 
-![Homepage](./docs/home.png)
+![Homepage](./assets/home.png)
 
 ### Shades and Alternate Colors
 
 See if a color is what you're looking for and see all the related colors, including shades, values and alternate colors.
 
-![Shades](./docs/shades.png)
+![Shades](./assets/shades.png)
 
 ### Color Extractor
 
@@ -32,7 +32,7 @@ Quickly generate a color palette- or choose individual colors from an image.
 
 _Note: Images are processed client side and are never uploaded anywhere_
 
-![Extractor](./docs/extract.png)
+![Extractor](./assets/extract.png)
 
 ## Progressive Web app (PWA)
 

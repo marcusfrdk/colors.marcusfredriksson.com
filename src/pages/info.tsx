@@ -25,6 +25,7 @@ import useColor from "contexts/color/useColor";
 import { useMemo } from "react";
 import getColorLabel from "utils/getColorLabel";
 import capitalize from "utils/capitalize";
+import { parseShadesQuery } from "utils/shadesQuery";
 
 const InfoPage = ({
   hex,
@@ -208,7 +209,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       ? decodeURIComponent(query.hex)
       : generateRandomHex();
 
-  const shades = generateShades(hex);
+  const shades = parseShadesQuery(query.shades) || generateShades(hex);
   const analogous = getAnalogousColors(hex);
   const triadic = getTradicColors(hex);
   const squares = getSquareColors(hex);

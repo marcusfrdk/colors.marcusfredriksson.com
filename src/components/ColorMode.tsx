@@ -10,7 +10,7 @@ const ColorMode = ({ mode, hex, margin }: Props) => {
 
   const functions: Record<ModeType, string> = {
     hex: hex,
-    rgb: Object.values(hexToRgba(hex)).join(", "),
+    rgb: Object.values(hexToRgba(hex)).slice(0, 3).join(", "),
     hsl: Object.values(hexToHsl(hex)).join(", "),
     cmyk: Object.values(hexToCmyk(hex)).join(", "),
   };

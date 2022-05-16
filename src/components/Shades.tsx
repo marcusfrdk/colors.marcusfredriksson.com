@@ -6,6 +6,7 @@ import generateShades from "utils/generateShades";
 import getGradientString from "utils/getGradientString";
 import getHoverColorFromHex from "utils/getHoverColorFromHex";
 import getTextColorFromHex from "utils/getTextColorFromHex";
+import { encodeShadesQuery } from "utils/shadesQuery";
 import { getInfoPageUrl } from "utils/urls";
 
 const baseNames = [
@@ -19,7 +20,7 @@ const Shades = ({ hex, defaultValue }: Props) => {
   );
 
   useEffect(() => {
-    const shades = generateShades(hex);
+    const shades = defaultValue || generateShades(hex);
     setStateShades(shades);
     setStateGradient(
       getGradientString(
@@ -28,7 +29,7 @@ const Shades = ({ hex, defaultValue }: Props) => {
         shades[shades.length - 1]
       )
     );
-  }, [hex]);
+  }, [hex, defaultValue]);
 
   return (
     <Container>
@@ -36,7 +37,11 @@ const Shades = ({ hex, defaultValue }: Props) => {
       <Content>
         <ShadesContainer>
           {stateShades.map((shade, index) => (
-            <Link key={index} href={getInfoPageUrl(shade)} scroll={false}>
+            <Link
+              key={index}
+              href={getInfoPageUrl(shade) + encodeShadesQuery(stateShades)}
+              scroll={false}
+            >
               <Shade
                 css={css`
                   background-color: ${shade};

@@ -15,7 +15,7 @@ const SelectNumberOfColors = ({ numberOfColors, setNumberOfColors }: Props) => {
   return (
     <Container style={{ bottom: hasChin ? "3rem" : "1rem" }}>
       <Text>
-        Showing {numberOfColors} color{numberOfColors === 1 ? "" : "s"}
+        Showing {numberOfColors - 1} color{numberOfColors - 1 === 1 ? "" : "s"}
       </Text>
       <Chevron size="0.5rem" color="var(--weak)" />
       <Select value={numberOfColors} onChange={handleChange}>

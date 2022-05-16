@@ -87,16 +87,7 @@ const InfoPage = ({
             {getTextColorFromHex(hex) === "#ffffff" ? "Light" : "Dark"} text
             recommended
           </p>
-          {label && (
-            <Label
-              style={{
-                backgroundColor: getHoverColorFromHex(hex),
-                color: getHoverColorFromHex(getTextColorFromHex(hex)),
-              }}
-            >
-              {capitalize(label)}
-            </Label>
-          )}
+          {label && <Label>{capitalize(label)}</Label>}
           <SaveButton onClick={() => fn(hex)}>
             <Icon color={getTextColorFromHex(hex)} size="1.5rem" />
           </SaveButton>
@@ -128,6 +119,8 @@ const Label = styled.p`
   font-size: 0.75rem;
   margin-top: 0.5rem;
   border-radius: 0.25rem;
+  background-color: var(--neutrals-0);
+  color: var(--weak) !important;
 `;
 
 const SaveButton = styled.button`

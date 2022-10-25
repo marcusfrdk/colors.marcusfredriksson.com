@@ -9,7 +9,7 @@ const NotFoundPage = () => {
   return (
     <Page>
       <SEO
-        title="Not found | Talmio Colors"
+        title="Not found | Colors"
         description="The page you were looking for does not seem to exist."
       />
       <Lottie

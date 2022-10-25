@@ -11,7 +11,7 @@ const Header = () => {
       <Title>
         <Link href="/">
           <a>
-            Talmio <Gradient>Colors</Gradient>
+            <Gradient>Colors</Gradient>
           </a>
         </Link>
       </Title>

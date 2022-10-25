@@ -1,18 +1,18 @@
 ![Extractor](./assets/main.png)
 
-# Talmio Colors
+# Colors
 
-![top language](https://img.shields.io/github/languages/top/talmio/colors.talmio.com)
-![code size](https://img.shields.io/github/languages/code-size/talmio/colors.talmio.com)
-![last commit](https://img.shields.io/github/last-commit/talmio/colors.talmio.com)
-![issues](https://img.shields.io/github/issues/talmio/colors.talmio.com)
-![contributors](https://img.shields.io/github/contributors/talmio/colors.talmio.com)
+![top language](https://img.shields.io/github/languages/top/marcusfrdk/colors.marcusfredriksson.com)
+![code size](https://img.shields.io/github/languages/code-size/marcusfrdk/colors.marcusfredriksson.com)
+![last commit](https://img.shields.io/github/last-commit/marcusfrdk/colors.marcusfredriksson.com)
+![issues](https://img.shields.io/github/issues/marcusfrdk/colors.marcusfredriksson.com)
+![contributors](https://img.shields.io/github/contributors/marcusfrdk/colors.marcusfredriksson.com)
 
-A web-application to generate colors, extract colors from images and more. Try out the application at [colors.talmio.com](https://colors.talmio.com).
+A web-application to generate colors, extract colors from images and more. Try out the application at [colors.marcusfredriksson.com](https://colors.marcusfredriksson.com).
 
 ## Introduction
 
-Dealing with colors can be a challenge without the right tools. `Talmio Colors` was created as a solution to this problem. Offering valueable tools to help you with color management, it's a great tool to use in your projects. The project was created out of personal requirements and convenience.
+Dealing with colors can be a challenge without the right tools. `Colors` was created as a solution to this problem. Offering valueable tools to help you with color management, it's a great tool to use in your projects. The project was created out of personal requirements and convenience.
 
 ### Color Generator
 
@@ -45,7 +45,7 @@ _Service workers are disabled in development_
 If you want to contribute to the project, please feel free to do so. You can get started by cloning the repository and running the following command (assuming you have a git client installed):
 
 ```bash
-git clone https://github.com/talmio/colors.talmio.com.git colors
+git clone https://github.com/marcusfrdk/colors.marcusfredriksson.com.git colors
 cd colors
 npm install
 ```

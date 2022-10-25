@@ -139,7 +139,7 @@ const ExtractPage = () => {
   return (
     <Page>
       <SEO
-        title="Extract | Talmio Colors"
+        title="Extract | Colors"
         description="Extract the prominent colors from an image."
       />
       {!stateError && (

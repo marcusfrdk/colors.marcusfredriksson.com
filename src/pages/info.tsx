@@ -55,7 +55,7 @@ const InfoPage = ({
     <Container>
       <Content>
         <SEO
-          title="Information | Talmio Colors"
+          title="Information | Colors"
           description="Generate shades, gradients and alternate color schemes."
         />
         <MainColor

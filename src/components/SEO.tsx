@@ -10,7 +10,7 @@ const SEO = ({ title, description }: Props) => {
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-      <meta name="apple-mobile-web-app-title" content="Talmio Colors" />
+      <meta name="apple-mobile-web-app-title" content="Colors" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content="/og-image.jpg" />
@@ -18,7 +18,7 @@ const SEO = ({ title, description }: Props) => {
       <meta property="og:image:width" content="1200px" />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={BASE_URL} />
-      <meta property="twitter:site" content="talmioofficial" />
+      <meta property="twitter:site" content="marcusfrdk" />
       <meta property="twitter:card" content="summary_large_image" />
       <meta name="theme-color" content={themeColor} />
       <meta name="msapplication-TileColor" content={themeColor} />

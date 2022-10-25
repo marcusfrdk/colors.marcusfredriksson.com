@@ -11,7 +11,7 @@ const HomePage = () => {
   return (
     <Container>
       <SEO
-        title="Talmio Colors"
+        title="Colors"
         description="Easily generate colors, shades and more."
       />
       <ColorContainer>

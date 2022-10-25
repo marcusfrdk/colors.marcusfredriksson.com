@@ -20,7 +20,7 @@ const SavedPage = () => {
   return (
     <Page>
       <SEO
-        title="Saved Colors | Talmio Colors"
+        title="Saved Colors | Colors"
         description="View and manage your saved colors."
       />
       {savedColors.length === 0 ? (

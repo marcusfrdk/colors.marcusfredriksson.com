@@ -45,7 +45,7 @@ _Service workers are disabled in development_
 If you want to contribute to the project, please feel free to do so. You can get started by cloning the repository and running the following command (assuming you have a git client installed):
 
 ```bash
-git clone https://github.com/marcusfrdk/colors.marcusfredriksson.com.git colors
+git clone https://github.com/marcusfrdk/colors.marcusfredriksson.com colors
 cd colors
 npm install
 ```

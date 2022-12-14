@@ -23,7 +23,6 @@ import {
 } from "react-icons/ai";
 import useColor from "contexts/color/useColor";
 import { useMemo } from "react";
-import getColorLabel from "utils/getColorLabel";
 import capitalize from "utils/capitalize";
 import { parseShadesQuery } from "utils/shadesQuery";
 
@@ -48,8 +47,6 @@ const InfoPage = ({
     () => (savedColors.includes(hex) ? unsaveColor : saveColor),
     [savedColors, hex, saveColor, unsaveColor]
   );
-
-  const label = useMemo(() => getColorLabel(hex), [hex]);
 
   return (
     <Container>
@@ -87,7 +84,6 @@ const InfoPage = ({
             {getTextColorFromHex(hex) === "#ffffff" ? "Light" : "Dark"} text
             recommended
           </p>
-          {label && <Label>{capitalize(label)}</Label>}
           <SaveButton onClick={() => fn(hex)}>
             <Icon color={getTextColorFromHex(hex)} size="1.5rem" />
           </SaveButton>

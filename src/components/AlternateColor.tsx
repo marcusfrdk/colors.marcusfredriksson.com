@@ -9,34 +9,32 @@ const AlternateColor = ({ title, hex, fn, onSelect }: Props) => {
   const [array, setArray] = useState<string[]>([]);
 
   useEffect(() => {
-    setArray(fn(hex));
+    setArray(fn(hex).sort((a, _) => (a === hex ? -1 : 1)));
   }, [hex, fn]);
 
   return (
     <div style={{ marginBottom: "2rem" }}>
       <Title>{title}</Title>
       <ColorContainer>
-        {array
-          .sort((a, _) => (a === hex ? -1 : 1))
-          .map((color, index) => (
-            <Color
-              key={index}
-              onClick={() => onSelect(color)}
-              style={{ backgroundColor: color }}
-            >
-              <p style={{ color: getTextColorFromHex(color) }}>{color}</p>
-              {color === hex ? (
-                <Label
-                  css={css`
-                    background-color: ${getHoverColorFromHex(color)};
-                    color: ${getTextColorFromHex(color)};
-                  `}
-                >
-                  Selected
-                </Label>
-              ) : null}
-            </Color>
-          ))}
+        {array.map((color, index) => (
+          <Color
+            key={index}
+            onClick={() => onSelect(color)}
+            style={{ backgroundColor: color }}
+          >
+            <p style={{ color: getTextColorFromHex(color) }}>{color}</p>
+            {color === hex ? (
+              <Label
+                css={css`
+                  background-color: ${getHoverColorFromHex(color)};
+                  color: ${getTextColorFromHex(color)};
+                `}
+              >
+                Selected
+              </Label>
+            ) : null}
+          </Color>
+        ))}
       </ColorContainer>
     </div>
   );

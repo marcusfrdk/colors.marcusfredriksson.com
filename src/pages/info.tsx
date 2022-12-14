@@ -92,16 +92,18 @@ const InfoPage = ({ hex, shades, hover }: Props) => {
             <Icon color={getTextColorFromHex(selectedColor)} size="1.5rem" />
           </SaveButton>
         </MainColor>
+        <ColorModeList>
+          <ColorMode mode="hex" hex={selectedColor} />
+          <ColorMode mode="rgb" hex={selectedColor} />
+          <ColorMode mode="hsl" hex={selectedColor} />
+          <ColorMode mode="cmyk" hex={selectedColor} />
+        </ColorModeList>
+
         <InfoHistory
           history={history}
           setHistory={setHistory}
           updateColor={updateColor}
         />
-
-        <ColorMode mode="hex" hex={selectedColor} />
-        <ColorMode mode="rgb" hex={selectedColor} />
-        <ColorMode mode="hsl" hex={selectedColor} />
-        <ColorMode mode="cmyk" hex={selectedColor} margin="0 0 2rem 0" />
 
         <Shades
           hex={selectedColor}
@@ -143,6 +145,13 @@ const InfoPage = ({ hex, shades, hover }: Props) => {
     </Container>
   );
 };
+
+const ColorModeList = styled.ul`
+  display: flex;
+  list-style: none;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+`;
 
 const SaveButton = styled.button`
   width: fit-content;

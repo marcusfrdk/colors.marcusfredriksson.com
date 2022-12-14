@@ -20,14 +20,18 @@ const InfoHistory = ({ history = [], setHistory, updateColor }: Props) => {
   }, []);
 
   return (
-    <Container style={{ marginBottom: history.length === 0 ? "1rem" : "2rem" }}>
-      {history.map((hex, index) => (
-        <Block
-          key={index}
-          style={{ backgroundColor: hex }}
-          onClick={() => updateColor(hex)}
-        />
-      ))}
+    <Container>
+      {history
+        ? history.map((hex, index) => (
+            <Block
+              key={index}
+              style={{ backgroundColor: hex }}
+              onClick={() => updateColor(hex)}
+            />
+          ))
+        : Array(10)
+            .fill([])
+            .map((_, i) => <Block key={i} />)}
     </Container>
   );
 };
@@ -49,6 +53,7 @@ const Container = styled.section`
   overflow-x: scroll;
   scroll-snap-type: x mandatory;
   padding-bottom: 1rem;
+  margin-bottom: 1rem;
 `;
 
 export default InfoHistory;

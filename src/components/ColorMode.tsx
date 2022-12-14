@@ -33,38 +33,36 @@ const ColorMode = ({ mode, hex, margin }: Props) => {
 };
 
 const Mode = styled.p`
-  padding: 0 1rem;
-  display: flex;
-  align-items: center;
-  border-radius: 0.5rem;
-  background-color: var(--neutrals-50);
-  color: var(--weak);
-  margin-right: 1rem;
-  min-width: 5rem;
-  justify-content: center;
+  color: var(--muted);
+  font-size: 0.875rem;
+  background-color: var(--neutrals-100);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  margin-right: 0.5rem;
+  white-space: nowrap;
 `;
 
 const Values = styled.p`
-  display: flex;
-  align-items: center;
-  align-self: center;
-  justify-content: center;
-  height: fit-content;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.5rem;
+  white-space: nowrap;
 `;
 
-const Container = styled.div`
+const Container = styled.li`
   display: flex;
-  height: 3rem;
+  background-color: var(--neutrals-50);
+  padding: 0.25rem 0.75rem 0.25rem 0.5rem;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  cursor: copy;
   margin-bottom: 1rem;
-  cursor: pointer;
-  border-radius: 0.5rem;
-  overflow: hidden;
+  &:not(:last-of-type) {
+    margin-right: 1rem;
+  }
   @media screen and (hover: hover) {
     &:hover {
-      & > p:last-of-type {
-        background-color: var(--neutrals-50);
+      background-color: var(--neutrals-100);
+      & > p:first-of-type {
+        background-color: var(--neutrals-200);
       }
     }
   }

@@ -45,7 +45,7 @@ const InfoPage = ({ hex, shades, hexIsDefined }: Props) => {
       <Content>
         <SEO
           title="Information | Colors"
-          description="Generate shades, gradients and alternate color schemes."
+          description="Show detailed information about a color, such as alternate color schemes, various color types and shades."
         />
 
         <InfoColor selectedColor={selectedColor} updateColor={updateColor} />

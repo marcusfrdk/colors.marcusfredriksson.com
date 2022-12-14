@@ -12,7 +12,7 @@ const HomePage = () => {
     <Container>
       <SEO
         title="Colors"
-        description="Easily generate colors, shades and more."
+        description="A web-application to generate colors, shades and extract colors from an image."
       />
       <ColorContainer>
         {colors.map((color, index) => (

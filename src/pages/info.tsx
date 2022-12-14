@@ -58,6 +58,11 @@ const InfoPage = ({ hex, shades, hover, hexIsDefined }: Props) => {
     [history]
   );
 
+  const handleClear = () => {
+    localStorage.removeItem("info-history");
+    setHistory([]);
+  };
+
   return (
     <Container>
       <Content>
@@ -138,6 +143,9 @@ const InfoPage = ({ hex, shades, hover, hexIsDefined }: Props) => {
           fn={getSquareColors}
           onSelect={updateColor}
         />
+        <ClearHistory disabled={history.length === 0} onClick={handleClear}>
+          Clear history
+        </ClearHistory>
       </Content>
       <input
         ref={inputRef}
@@ -148,6 +156,23 @@ const InfoPage = ({ hex, shades, hover, hexIsDefined }: Props) => {
     </Container>
   );
 };
+
+const ClearHistory = styled.button`
+  padding-bottom: 4rem;
+  text-align: center;
+  user-select: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--red-500);
+  background: none;
+  border: none;
+  width: 100%;
+
+  &:disabled {
+    cursor: default;
+    color: var(--muted);
+  }
+`;
 
 const ColorModeList = styled.ul`
   display: flex;

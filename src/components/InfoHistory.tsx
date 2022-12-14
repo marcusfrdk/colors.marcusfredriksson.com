@@ -38,7 +38,7 @@ const InfoHistory = ({
   }, []);
 
   return (
-    <Container>
+    <Container className={history.length === 0 ? "disabled" : ""}>
       {history
         ? history.map((hex, index) => (
             <Block
@@ -72,6 +72,10 @@ const Container = styled.section`
   scroll-snap-type: x mandatory;
   padding-bottom: 1rem;
   margin-bottom: 1rem;
+  &.disabled {
+    display: none;
+    background-color: red;
+  }
 `;
 
 export default InfoHistory;

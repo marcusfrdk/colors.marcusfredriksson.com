@@ -149,6 +149,7 @@ const InfoPage = ({ hex, shades, hover }: Props) => {
 const ColorModeList = styled.ul`
   display: flex;
   list-style: none;
+  margin-top: 2rem;
   margin-bottom: 1rem;
   flex-wrap: wrap;
 `;

@@ -55,6 +55,7 @@ const Container = styled.li`
   align-items: center;
   cursor: copy;
   margin-bottom: 1rem;
+  user-select: none;
   &:not(:last-of-type) {
     margin-right: 1rem;
   }

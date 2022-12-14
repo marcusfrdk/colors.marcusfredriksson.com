@@ -22,7 +22,7 @@ import getSquareColors from "utils/getSquareColors";
 import getTradicColors from "utils/getTriadicColors";
 import InfoHistory from "components/InfoHistory";
 
-const InfoPage = ({ hex, shades, hover }: Props) => {
+const InfoPage = ({ hex, shades, hover, hexIsDefined }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { savedColors, saveColor, unsaveColor } = useColor();
   const [selectedColor, setSelectedColor] = useState<string>(hex);
@@ -92,6 +92,7 @@ const InfoPage = ({ hex, shades, hover }: Props) => {
             <Icon color={getTextColorFromHex(selectedColor)} size="1.5rem" />
           </SaveButton>
         </MainColor>
+
         <ColorModeList>
           <ColorMode mode="hex" hex={selectedColor} />
           <ColorMode mode="rgb" hex={selectedColor} />
@@ -100,9 +101,11 @@ const InfoPage = ({ hex, shades, hover }: Props) => {
         </ColorModeList>
 
         <InfoHistory
+          hex={hex}
           history={history}
           setHistory={setHistory}
           updateColor={updateColor}
+          hexIsDefined={hexIsDefined}
         />
 
         <Shades
@@ -232,17 +235,20 @@ const Container = styled.main`
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { query } = ctx;
 
-  const hex =
-    query.hex && !Array.isArray(query.hex) && isHex(query.hex)
-      ? decodeURIComponent(query.hex)
-      : generateRandomHex();
+  let hex: string;
+  let hexIsDefined = false;
 
-  // const shades = parseShadesQuery(query.shades) || generateShades(hex);
-  // const hover = getHoverColorFromHex(hex);
+  if (query.hex && !Array.isArray(query.hex) && isHex(query.hex)) {
+    hex = decodeURIComponent(query.hex);
+    hexIsDefined = true;
+  } else {
+    hex = generateRandomHex();
+  }
 
   return {
     props: {
       hex,
+      hexIsDefined,
     },
   };
 };
@@ -251,6 +257,7 @@ type Props = {
   hex: string;
   shades: string[];
   hover: string;
+  hexIsDefined: boolean;
 };
 
 export default InfoPage;

@@ -1,19 +1,37 @@
 import styled from "@emotion/styled";
+import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect } from "react";
 
 type Props = {
+  hex: string;
   history: string[];
   setHistory: Dispatch<SetStateAction<string[]>>;
   updateColor: (value: string, ignoreHistory?: boolean) => void;
+  hexIsDefined?: boolean;
 };
 
-const InfoHistory = ({ history = [], setHistory, updateColor }: Props) => {
+const InfoHistory = ({
+  hex,
+  history = [],
+  setHistory,
+  updateColor,
+  hexIsDefined,
+}: Props) => {
+  const router = useRouter();
+
   useEffect(() => {
     const stored = localStorage.getItem("info-history");
     if (!stored) return;
     try {
       const h = JSON.parse(stored);
-      if (Array.isArray(h) && h.length > 0) setHistory(h);
+      if (Array.isArray(h) && h.length > 0) {
+        if (hexIsDefined && h[0] != hex) {
+          h.unshift(hex);
+          localStorage.setItem("info-history", JSON.stringify(h));
+          router.replace("/info", undefined, { shallow: true });
+        }
+        setHistory(h);
+      }
     } catch (err) {
       return;
     }

@@ -1,46 +1,28 @@
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import AlternateColor from "components/AlternateColor";
 import ColorMode from "components/ColorMode";
 import SEO from "components/SEO";
-import { GetServerSideProps } from "next";
-import { BREAKPOINT_MOBILE, BREAKPOINT_TABLET } from "utils/constants";
 import generateRandomHex from "utils/generateRandomHex";
-import getTextColorFromHex from "utils/getTextColorFromHex";
 import isHex from "utils/isHex";
 import Shades from "../components/Shades";
-import {
-  AiFillHeart as Heart,
-  AiOutlineHeart as BrokenHeart,
-} from "react-icons/ai";
-import useColor from "contexts/color/useColor";
-import { useCallback, useMemo, useRef, useState } from "react";
-import { FaPen as Pen } from "react-icons/fa";
 import getAnalogousColors from "utils/getAnalogousColors";
 import getComplementaryColors from "utils/getComplementaryColors";
 import getSquareColors from "utils/getSquareColors";
 import getTradicColors from "utils/getTriadicColors";
 import InfoHistory from "components/InfoHistory";
+import InfoColor from "components/InfoColor";
+import { GetServerSideProps } from "next";
+import { BREAKPOINT_MOBILE, BREAKPOINT_TABLET } from "utils/constants";
+import { useCallback, useState } from "react";
 
-const InfoPage = ({ hex, shades, hover, hexIsDefined }: Props) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { savedColors, saveColor, unsaveColor } = useColor();
+const InfoPage = ({ hex, shades, hexIsDefined }: Props) => {
   const [selectedColor, setSelectedColor] = useState<string>(hex);
   const [history, setHistory] = useState<string[]>([]);
-  const textColor = useMemo(
-    () => getTextColorFromHex(selectedColor),
-    [selectedColor]
-  );
 
-  const Icon = useMemo(
-    () => (savedColors.includes(selectedColor) ? Heart : BrokenHeart),
-    [savedColors, selectedColor]
-  );
-
-  const fn = useMemo(
-    () => (savedColors.includes(selectedColor) ? unsaveColor : saveColor),
-    [savedColors, selectedColor, saveColor, unsaveColor]
-  );
+  const handleClear = () => {
+    localStorage.removeItem("info-history");
+    setHistory([]);
+  };
 
   const updateColor = useCallback(
     (value: string, ignoreHistory?: boolean) => {
@@ -58,11 +40,6 @@ const InfoPage = ({ hex, shades, hover, hexIsDefined }: Props) => {
     [history]
   );
 
-  const handleClear = () => {
-    localStorage.removeItem("info-history");
-    setHistory([]);
-  };
-
   return (
     <Container>
       <Content>
@@ -70,33 +47,8 @@ const InfoPage = ({ hex, shades, hover, hexIsDefined }: Props) => {
           title="Information | Colors"
           description="Generate shades, gradients and alternate color schemes."
         />
-        <MainColor
-          css={css`
-            background-color: ${selectedColor};
-            * {
-              color: ${getTextColorFromHex(selectedColor)};
-            }
-          `}
-        >
-          <p
-            onClick={() => inputRef.current?.click()}
-            css={css`
-              @media screen and (hover: hover) {
-                &:hover {
-                  background-color: ${hover};
-                }
-              }
-            `}
-          >
-            {selectedColor} <Pen />
-          </p>
-          <p style={{ color: textColor }}>
-            {textColor === "#ffffff" ? "Light" : "Dark"} text recommended
-          </p>
-          <SaveButton onClick={() => fn(selectedColor)}>
-            <Icon color={getTextColorFromHex(selectedColor)} size="1.5rem" />
-          </SaveButton>
-        </MainColor>
+
+        <InfoColor selectedColor={selectedColor} updateColor={updateColor} />
 
         <ColorModeList>
           <ColorMode mode="hex" hex={selectedColor} />
@@ -143,16 +95,11 @@ const InfoPage = ({ hex, shades, hover, hexIsDefined }: Props) => {
           fn={getSquareColors}
           onSelect={updateColor}
         />
+
         <ClearHistory disabled={history.length === 0} onClick={handleClear}>
           Clear history
         </ClearHistory>
       </Content>
-      <input
-        ref={inputRef}
-        type="color"
-        onChange={(e) => updateColor(e.target.value)}
-        style={{ display: "none" }}
-      />
     </Container>
   );
 };
@@ -180,66 +127,6 @@ const ColorModeList = styled.ul`
   margin-top: 2rem;
   margin-bottom: 1rem;
   flex-wrap: wrap;
-`;
-
-const SaveButton = styled.button`
-  width: fit-content;
-  border: none;
-  height: 3rem;
-  width: 3rem;
-  border-radius: 0.5rem;
-  position: absolute;
-  bottom: 1rem;
-  right: 1rem;
-  background-color: transparent;
-  cursor: pointer;
-  transition: background-color 64ms ease-in-out;
-
-  & > svg {
-    transition: 64ms ease-in-out;
-    transition-property: fill, color;
-  }
-
-  @media screen and (hover: hover) {
-    &:hover {
-      background-color: var(--neutrals-0);
-      * {
-        fill: var(--strong);
-      }
-    }
-  }
-`;
-
-const MainColor = styled.div`
-  position: relative;
-  height: 12rem;
-  border-radius: 1rem;
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  flex-direction: column;
-  padding: 1rem 0.5rem;
-  margin-bottom: 1rem;
-  user-select: none;
-  & > p:first-of-type {
-    padding: 0.25rem 0.5rem;
-    font-size: 1.5rem;
-    font-weight: var(--font-medium);
-    margin-bottom: 0.25rem;
-    width: fit-content;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    & > svg {
-      margin-left: 0.5rem;
-      height: 1rem;
-      width: 1rem;
-    }
-  }
-  & > p:last-of-type {
-    padding: 0 0.5rem;
-  }
 `;
 
 const Content = styled.div`

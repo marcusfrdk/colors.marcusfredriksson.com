@@ -33,7 +33,7 @@ const ColorMode = ({ mode, hex, margin }: Props) => {
 };
 
 const Mode = styled.p`
-  color: var(--muted);
+  color: var(--weak);
   font-size: 0.875rem;
   background-color: var(--neutrals-100);
   padding: 0.125rem 0.25rem;

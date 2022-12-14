@@ -15,12 +15,11 @@ const Menu = () => {
         .filter((f) => !f.mobileOnly)
         .map(({ label, href }, index) => (
           <li key={index}>
-            <Link href={href}>
-              <a
-                className={router.asPath.split("?")[0] === href ? "active" : ""}
-              >
-                {label}
-              </a>
+            <Link
+              href={href}
+              className={router.asPath.split("?")[0] === href ? "active" : ""}
+            >
+              {label}
             </Link>
           </li>
         ))}

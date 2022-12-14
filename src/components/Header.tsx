@@ -10,9 +10,7 @@ const Header = () => {
       <MobileMenu />
       <Title>
         <Link href="/">
-          <a>
-            <Gradient>Colors</Gradient>
-          </a>
+          <Gradient>Colors</Gradient>
         </Link>
       </Title>
       <Menu />

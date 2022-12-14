@@ -28,9 +28,9 @@ const InfoHistory = ({
         if (hexIsDefined && h[0] != hex) {
           h.unshift(hex);
           localStorage.setItem("info-history", JSON.stringify(h));
-          router.replace("/info", undefined, { shallow: true });
         }
         setHistory(h);
+        router.replace("/info", undefined, { shallow: true });
       }
     } catch (err) {
       return;

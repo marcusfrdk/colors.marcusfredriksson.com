@@ -10,35 +10,39 @@
 
 A web-application to generate colors, extract colors from images and more. Try out the application at [colors.marcusfredriksson.com](https://colors.marcusfredriksson.com).
 
-## Introduction
-
-Dealing with colors can be a challenge without the right tools. `Colors` was created as a solution to this problem. Offering valueable tools to help you with color management, it's a great tool to use in your projects. The project was created out of personal requirements and convenience.
+## Usage
 
 ### Color Generator
 
-Generate random colors and save them for later. Use the spacebar for quickly regenerate the colors, and the arrow keys to undo and redo the regeneration.
+This is the page where you can generate a color palette. At the bottom of the page, you will find the toolbar.
 
-![Homepage](./assets/home.png)
+![Toolbar](./assets/docs-toolbar.png)
 
-### Shades and Alternate Colors
+The toolbar is the main way of interacting with the application. To the left, you will find a trash can, this will reset any changes and history you have made.
 
-See if a color is what you're looking for and see all the related colors, including shades, values and alternate colors.
+To the right of the trash can, you can see the refresh button, this will refresh all **unlocked** colors. _You can lock/unlock a color by pressing the lock icon on a color._
 
-![Shades](./assets/shades.png)
+In the center you can see a plus icon, this will add a color (max 12). _This can also be triggered by pressing the **spacebar** on your keyboard._
 
-### Color Extractor
+To the right of the plus you will find an arrow to the left and the right. This will navigate through the history (undo/redo). _These can be triggered by pressing the **arrow left** and **arrow right** buttons on your keyboard respectively._
 
-Quickly generate a color palette- or choose individual colors from an image.
+Pressing the heart icon will save the color and pressing the color itself will take you to the information page.
 
-_Note: Images are processed client side and are never uploaded anywhere_
+## Information
 
-![Extractor](./assets/extract.png)
+The information page will give an in-depth view of a specific color. You will find information such as the various color type values, a gradient with the color and some of the gradient colors. You will also find many of the different common color schemes. At the bottom you will find a "clear history" button to clear localstorage.
 
-## Progressive Web app (PWA)
+## Extract
 
-The application is PWA compatible and thus downloadable for offline usage. If you want to have it quickly accessible, bookmark it on Safari or install it with your browsers respective installer.
+_Note: **No images are ever uploaded**. They are only parsed locally on your machine._
 
-_Service workers are disabled in development_
+The extract page allows you to parse an image and generate a color palette based of the image. Images can either be dragged-and-dropped anywhere on the page or parsed by pressing the "Select image" button to select the image.
+
+At the bottom of the page (before parsing), you can select the number of colors to show once finished.
+
+## Saved
+
+The saved page is a list of all colors you have saved.
 
 ## Development
 
@@ -48,10 +52,5 @@ If you want to contribute to the project, please feel free to do so. You can get
 git clone https://github.com/marcusfrdk/colors.marcusfredriksson.com colors
 cd colors
 npm install
-```
-
-When everything is installed, start the development server with the following command:
-
-```bash
 npm run dev
 ```

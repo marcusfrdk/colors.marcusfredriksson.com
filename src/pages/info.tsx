@@ -3,18 +3,10 @@ import styled from "@emotion/styled";
 import AlternateColor from "components/AlternateColor";
 import ColorMode from "components/ColorMode";
 import SEO from "components/SEO";
-import useMessage from "contexts/message/useMessage";
 import { GetServerSideProps } from "next";
 import { BREAKPOINT_MOBILE, BREAKPOINT_TABLET } from "utils/constants";
-import copyToClipboard from "utils/copyToClipboard";
 import generateRandomHex from "utils/generateRandomHex";
-import generateShades from "utils/generateShades";
-import getAnalogousColors from "utils/getAnalogousColors";
-import getComplementaryColors from "utils/getComplementaryColors";
-import getHoverColorFromHex from "utils/getHoverColorFromHex";
-import getSquareColors from "utils/getSquareColors";
 import getTextColorFromHex from "utils/getTextColorFromHex";
-import getTradicColors from "utils/getTriadicColors";
 import isHex from "utils/isHex";
 import Shades from "../components/Shades";
 import {
@@ -22,30 +14,48 @@ import {
   AiOutlineHeart as BrokenHeart,
 } from "react-icons/ai";
 import useColor from "contexts/color/useColor";
-import { useMemo } from "react";
-import capitalize from "utils/capitalize";
-import { parseShadesQuery } from "utils/shadesQuery";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { FaPen as Pen } from "react-icons/fa";
+import getAnalogousColors from "utils/getAnalogousColors";
+import getComplementaryColors from "utils/getComplementaryColors";
+import getSquareColors from "utils/getSquareColors";
+import getTradicColors from "utils/getTriadicColors";
+import InfoHistory from "components/InfoHistory";
 
-const InfoPage = ({
-  hex,
-  shades,
-  analogous,
-  triadic,
-  squares,
-  complementary,
-  hover,
-}: Props) => {
-  const { newToast } = useMessage();
+const InfoPage = ({ hex, shades, hover }: Props) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const { savedColors, saveColor, unsaveColor } = useColor();
+  const [selectedColor, setSelectedColor] = useState<string>(hex);
+  const [history, setHistory] = useState<string[]>([]);
+  const textColor = useMemo(
+    () => getTextColorFromHex(selectedColor),
+    [selectedColor]
+  );
 
   const Icon = useMemo(
-    () => (savedColors.includes(hex) ? Heart : BrokenHeart),
-    [savedColors, hex]
+    () => (savedColors.includes(selectedColor) ? Heart : BrokenHeart),
+    [savedColors, selectedColor]
   );
 
   const fn = useMemo(
-    () => (savedColors.includes(hex) ? unsaveColor : saveColor),
-    [savedColors, hex, saveColor, unsaveColor]
+    () => (savedColors.includes(selectedColor) ? unsaveColor : saveColor),
+    [savedColors, selectedColor, saveColor, unsaveColor]
+  );
+
+  const updateColor = useCallback(
+    (value: string, ignoreHistory?: boolean) => {
+      if (!isHex(value)) return;
+      setSelectedColor(value);
+      if (!ignoreHistory) {
+        const h = (history[0] === value ? history : [value, ...history]).slice(
+          0,
+          25
+        );
+        setHistory(h);
+        localStorage.setItem("info-history", JSON.stringify(h));
+      }
+    },
+    [history]
   );
 
   return (
@@ -57,19 +67,14 @@ const InfoPage = ({
         />
         <MainColor
           css={css`
-            background-color: ${hex};
+            background-color: ${selectedColor};
             * {
-              color: ${getTextColorFromHex(hex)};
+              color: ${getTextColorFromHex(selectedColor)};
             }
           `}
         >
           <p
-            onClick={() => {
-              const success = copyToClipboard(hex);
-              newToast(
-                success ? "Color copied to clipboard" : "Failed to copy color"
-              );
-            }}
+            onClick={() => inputRef.current?.click()}
             css={css`
               @media screen and (hover: hover) {
                 &:hover {
@@ -78,46 +83,66 @@ const InfoPage = ({
               }
             `}
           >
-            {hex}
+            {selectedColor} <Pen />
           </p>
-          <p>
-            {getTextColorFromHex(hex) === "#ffffff" ? "Light" : "Dark"} text
-            recommended
+          <p style={{ color: textColor }}>
+            {textColor === "#ffffff" ? "Light" : "Dark"} text recommended
           </p>
-          <SaveButton onClick={() => fn(hex)}>
-            <Icon color={getTextColorFromHex(hex)} size="1.5rem" />
+          <SaveButton onClick={() => fn(selectedColor)}>
+            <Icon color={getTextColorFromHex(selectedColor)} size="1.5rem" />
           </SaveButton>
         </MainColor>
+        <InfoHistory
+          history={history}
+          setHistory={setHistory}
+          updateColor={updateColor}
+        />
 
-        <ColorMode mode="hex" hex={hex} />
-        <ColorMode mode="rgb" hex={hex} />
-        <ColorMode mode="hsl" hex={hex} />
-        <ColorMode mode="cmyk" hex={hex} margin="0 0 2rem 0" />
+        <ColorMode mode="hex" hex={selectedColor} />
+        <ColorMode mode="rgb" hex={selectedColor} />
+        <ColorMode mode="hsl" hex={selectedColor} />
+        <ColorMode mode="cmyk" hex={selectedColor} margin="0 0 2rem 0" />
 
-        <Shades hex={hex} defaultValue={shades} />
+        <Shades
+          hex={selectedColor}
+          defaultValue={shades}
+          onSelect={updateColor}
+        />
 
-        <AlternateColor title="Analogous Colors" hex={hex} array={analogous} />
-        <AlternateColor title="Triadic Colors" hex={hex} array={triadic} />
+        <AlternateColor
+          title="Analogous Colors"
+          hex={selectedColor}
+          fn={getAnalogousColors}
+          onSelect={updateColor}
+        />
+        <AlternateColor
+          title="Triadic Colors"
+          hex={selectedColor}
+          fn={getTradicColors}
+          onSelect={updateColor}
+        />
         <AlternateColor
           title="Complementary Colors"
-          hex={hex}
-          array={complementary}
+          hex={selectedColor}
+          fn={getComplementaryColors}
+          onSelect={updateColor}
         />
-        <AlternateColor title="Square Colors" hex={hex} array={squares} />
+        <AlternateColor
+          title="Square Colors"
+          hex={selectedColor}
+          fn={getSquareColors}
+          onSelect={updateColor}
+        />
       </Content>
+      <input
+        ref={inputRef}
+        type="color"
+        onChange={(e) => updateColor(e.target.value)}
+        style={{ display: "none" }}
+      />
     </Container>
   );
 };
-
-const Label = styled.p`
-  width: fit-content;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  margin-top: 0.5rem;
-  border-radius: 0.25rem;
-  background-color: var(--neutrals-0);
-  color: var(--weak) !important;
-`;
 
 const SaveButton = styled.button`
   width: fit-content;
@@ -155,23 +180,27 @@ const MainColor = styled.div`
   display: flex;
   justify-content: flex-end;
   flex-direction: column;
-  padding: 1rem;
-  margin-bottom: 2rem;
+  padding: 1rem 0.5rem;
+  margin-bottom: 1rem;
   user-select: none;
   & > p:first-of-type {
+    padding: 0.25rem 0.5rem;
     font-size: 1.5rem;
     font-weight: var(--font-medium);
     margin-bottom: 0.25rem;
     width: fit-content;
-    transition-property: padding, background-color;
-    transition: 256ms ease-in-out;
     border-radius: 0.5rem;
     cursor: pointer;
-    @media screen and (hover: hover) {
-      &:hover {
-        padding: 0.5rem 1rem;
-      }
+    display: flex;
+    align-items: center;
+    & > svg {
+      margin-left: 0.5rem;
+      height: 1rem;
+      width: 1rem;
     }
+  }
+  & > p:last-of-type {
+    padding: 0 0.5rem;
   }
 `;
 
@@ -198,22 +227,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       ? decodeURIComponent(query.hex)
       : generateRandomHex();
 
-  const shades = parseShadesQuery(query.shades) || generateShades(hex);
-  const analogous = getAnalogousColors(hex);
-  const triadic = getTradicColors(hex);
-  const squares = getSquareColors(hex);
-  const complementary = getComplementaryColors(hex);
-  const hover = getHoverColorFromHex(hex);
+  // const shades = parseShadesQuery(query.shades) || generateShades(hex);
+  // const hover = getHoverColorFromHex(hex);
 
   return {
     props: {
       hex,
-      shades,
-      analogous,
-      triadic,
-      squares,
-      complementary,
-      hover,
     },
   };
 };
@@ -221,10 +240,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 type Props = {
   hex: string;
   shades: string[];
-  analogous: string[];
-  triadic: string[];
-  squares: string[];
-  complementary: string[];
   hover: string;
 };
 

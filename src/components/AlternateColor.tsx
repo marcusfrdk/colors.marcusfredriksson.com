@@ -1,30 +1,30 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import { BREAKPOINT_MOBILE, BREAKPOINT_TABLET } from "utils/constants";
 import getHoverColorFromHex from "utils/getHoverColorFromHex";
 import getTextColorFromHex from "utils/getTextColorFromHex";
-import { getInfoPageUrl } from "utils/urls";
 
-const AlternateColor = ({ title, hex, array }: Props) => {
+const AlternateColor = ({ title, hex, fn, onSelect }: Props) => {
+  const [array, setArray] = useState<string[]>([]);
+
+  useEffect(() => {
+    setArray(fn(hex));
+  }, [hex, fn]);
+
   return (
-    <Container>
+    <div style={{ marginBottom: "2rem" }}>
       <Title>{title}</Title>
       <ColorContainer>
-        {array.map((color, index) => (
-          <Link key={index} href={getInfoPageUrl(color)} scroll={false}>
+        {array
+          .sort((a, _) => (a === hex ? -1 : 1))
+          .map((color, index) => (
             <Color
-              css={css`
-                background-color: ${color};
-              `}
+              key={index}
+              onClick={() => onSelect(color)}
+              style={{ backgroundColor: color }}
             >
-              <p
-                css={css`
-                  color: ${getTextColorFromHex(color)};
-                `}
-              >
-                {color}
-              </p>
+              <p style={{ color: getTextColorFromHex(color) }}>{color}</p>
               {color === hex ? (
                 <Label
                   css={css`
@@ -36,16 +36,11 @@ const AlternateColor = ({ title, hex, array }: Props) => {
                 </Label>
               ) : null}
             </Color>
-          </Link>
-        ))}
+          ))}
       </ColorContainer>
-    </Container>
+    </div>
   );
 };
-
-const Container = styled.div`
-  margin-bottom: 2rem;
-`;
 
 const Title = styled.p`
   font-weight: var(--font-medium);
@@ -63,6 +58,12 @@ const ColorContainer = styled.div`
   display: flex;
   user-select: none;
   cursor: pointer;
+
+  & > p {
+    text-decoration: none;
+    width: 100%;
+  }
+
   @media screen and (max-width: ${BREAKPOINT_MOBILE}) {
     flex-direction: column;
     & > div {
@@ -90,10 +91,13 @@ const Color = styled.div`
   }
 `;
 
+type Title = "analogous" | "triadic" | "squares" | "complementary";
+
 type Props = {
   title: string;
   hex: string;
-  array: string[];
+  fn: (hex: string) => string[];
+  onSelect: (value: string) => void;
 };
 
 export default AlternateColor;

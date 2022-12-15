@@ -3,7 +3,6 @@ import SEO from "components/SEO";
 import { ChangeEvent, useRef, useState } from "react";
 import loadImage from "../utils/loadImage";
 import extract from "extract-colors";
-import sleep from "utils/sleep";
 import useMessage from "contexts/message/useMessage";
 import copyToClipboard from "utils/copyToClipboard";
 import { FaTimes } from "react-icons/fa";
@@ -28,24 +27,25 @@ export default function Component() {
   };
 
   async function handleUpload(e: ChangeEvent<HTMLInputElement>) {
-    setDragging(false);
-    if (loading || !e.target.files || e.target.files.length === 0) return;
-    const file = e.target.files[0];
+    try {
+      e.preventDefault();
+      setDragging(false);
+      if (loading || !e.target.files || e.target.files.length === 0) return;
+      const file = e.target.files[0];
+      setLoading(true);
 
-    setLoading(true);
-    await sleep(1000);
-
-    const { imageData, src } = await loadImage(file);
-    const extracted = await extract(imageData);
-    const values = Object.values(extracted)
-      .sort((a, b) => (a.area > b.area ? -1 : 1))
-      .map(({ hex }) => hex)
-      .splice(0, 8);
-    setColors(values);
-    setSrc(src);
-
-    e.target.value = "";
-    setLoading(false);
+      const { imageData, src } = await loadImage(file);
+      const extracted = await extract(imageData);
+      const values = Object.values(extracted)
+        .sort((a, b) => (a.area > b.area ? -1 : 1))
+        .map(({ hex }) => hex)
+        .splice(0, 8);
+      setColors(values);
+      setSrc(src);
+    } finally {
+      setLoading(false);
+      e.target.value = "";
+    }
   }
 
   function handleClear() {

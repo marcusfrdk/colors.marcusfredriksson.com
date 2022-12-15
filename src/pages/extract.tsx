@@ -136,6 +136,13 @@ const PreUploadInfo = styled.div`
 
   & > p {
     color: var(--weak);
+    display: none;
+  }
+
+  @media screen and (hover: hover) {
+    & > p {
+      display: block;
+    }
   }
 `;
 

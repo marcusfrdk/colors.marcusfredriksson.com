@@ -76,6 +76,7 @@ export default function Component() {
           onChange={handleUpload}
           ref={inputRef}
         />
+        <Note>Files never leave your computer.</Note>
       </Dropzone>
       <Information className={!src ? "hide" : ""}>
         <img
@@ -113,6 +114,17 @@ export default function Component() {
     </Page>
   );
 }
+
+const Note = styled.p`
+  position: absolute;
+  bottom: 1rem;
+  text-align: center;
+  white-space: nowrap;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.875rem;
+  color: var(--muted);
+`;
 
 const PreUploadInfo = styled.div`
   display: flex;
@@ -221,17 +233,14 @@ const Close = styled.button`
 `;
 
 const Dropzone = styled.div`
-  /* height: calc(var(--viewport-height) * 0.9); */
-  height: calc(var(--viewport-height) - var(--header-height) - 4rem);
-  width: calc(100vw - 4rem);
+  height: calc(var(--viewport-height) - var(--header-height) - 2rem);
+  width: calc(100vw - 2rem);
   border-radius: 1rem;
   border: 0.25rem dashed var(--neutrals-200);
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
-  /* transition: 256ms ease-in-out;
-  transition-property: background-color, border, height, width; */
   overflow: hidden;
   top: calc(50% + 2rem);
   left: 50%;

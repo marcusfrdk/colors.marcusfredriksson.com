@@ -112,6 +112,13 @@ const GlobalStyles = () => {
             --primary-900: #05172e;
           }
         }
+        .hide-scrollbar {
+          &::-webkit-scrollbar {
+            display: none;
+          }
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
       `}
     />
   );
